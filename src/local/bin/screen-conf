@@ -1,0 +1,29 @@
+#!/bin/sh
+
+if type xrandr >/dev/null 2>&1; then
+	case "$(xrandr -q | fgrep -c ' connected')" in
+		2)
+			xrandr \
+				--output DP-1 --off \
+				--output eDP-1-1 --off \
+				--output HDMI-1 \
+					--mode 1366x768 \
+					--pos 0x0 \
+					--rotate normal \
+				--output HDMI-1-2 --off \
+				--output LVDS-1 \
+					--primary \
+					--mode 1366x768 \
+					--pos 1366x0 \
+					--rotate normal \
+				--output LVDS-1-2 --off \
+				--output VGA-1 --off \
+				--output VGA-1-2 --off
+			;;
+		*)
+			xrandr --auto
+			;;
+	esac
+fi
+
+exit 0

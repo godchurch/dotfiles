@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e
+
+if [ -x ~/bin/screen-conf ]
+then
+	~/bin/screen-conf
+fi
+
+if [ -x ~/bin/volume ]
+then
+	~/bin/volume
+fi
+
+if [ -x ~/bin/keyboard-conf ]
+then
+	~/bin/keyboard-conf
+fi
+
+if [ -x ~/bin/load-xresources ]
+then
+	~/bin/load-xresources
+fi
+
+case "${1:-openbox}" in
+	i3|i3wm) exec i3     ;;
+	openbox) exec openbox;;
+	*      ) exec "$1"   ;;
+esac

@@ -1,0 +1,9 @@
+if [ -n "$BASH_VERSION" ]; then
+	if [ -r "$HOME/.bashrc" ]; then
+	    . "$HOME/.bashrc"
+	fi
+fi
+
+if [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/my-environment" ]; then
+	. "${XDG_CONFIG_HOME:-$HOME/.config}/my-environment"
+fi

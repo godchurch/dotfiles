@@ -1,0 +1,61 @@
+#!/bin/bash
+
+set -e
+
+type /usr/bin/pulseaudio /usr/bin/pactl &>/dev/null || exit 1
+
+if /usr/bin/pulseaudio --check; then
+	PA_INFO="$(/usr/bin/pactl info)"
+else
+	exit 1
+fi
+
+_GetDefault ()
+{
+	local default value name null
+
+	while read -r default value name null; do
+		if [[ "$default ${value//:/}" == "Default $1" ]]; then
+			DEFAULT="$name"
+			return 0
+		fi
+	done <<< "$PA_INFO"
+
+	return 1
+}
+
+case "$1" in
+	default)
+		_GetDefault Sink
+		/usr/bin/pactl set-sink-volume "$DEFAULT" 50%
+		/usr/bin/pactl set-sink-mute "$DEFAULT" 0
+		/usr/bin/pactl suspend-sink "$DEFAULT" 0
+
+		_GetDefault Source
+		/usr/bin/pactl set-source-volume "$DEFAULT" 0%
+		/usr/bin/pactl set-source-mute "$DEFAULT" 1
+		/usr/bin/pactl suspend-source "$DEFAULT" 0
+		;;
+	sink)
+		_GetDefault Sink
+		case "$2" in
+			up  ) /usr/bin/pactl set-sink-volume "$DEFAULT" +5%;;
+			down) /usr/bin/pactl set-sink-volume "$DEFAULT" -5%;;
+			mute) /usr/bin/pactl set-sink-mute "$DEFAULT" toggle;;
+			*   ) ;;
+		esac
+		;;
+	source)
+		_GetDefault Source
+		case "$2" in
+			up  ) /usr/bin/pactl set-source-volume "$DEFAULT" +5%;;
+			down) /usr/bin/pactl set-source-volume "$DEFAULT" -5%;;
+			mute) /usr/bin/pactl set-source-mute "$DEFAULT" toggle;;
+			*   ) ;;
+		esac
+		;;
+	*)
+		;;
+esac
+
+exit 0

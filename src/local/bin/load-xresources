@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -r $HOME/.Xresources -a -x /usr/bin/xrdb ]; then
+	/usr/bin/xrdb -merge $HOME/.Xresources
+fi
+
+exit 0

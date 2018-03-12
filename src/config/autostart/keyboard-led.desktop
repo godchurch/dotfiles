@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Keyboard Led
+Comment=Turn on keyboard led
+TryExec=/usr/bin/xset
+Exec=/usr/bin/xset led on
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
