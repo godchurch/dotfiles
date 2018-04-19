@@ -4,6 +4,38 @@ if [ -n "$BASH_VERSION" ]; then
 	fi
 fi
 
-if [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/my-environment" ]; then
-	. "${XDG_CONFIG_HOME:-$HOME/.config}/my-environment"
-fi
+_my_env () {
+	case "$MY_ENV" in
+		0) return 0
+			;;
+		*)
+			export MY_ENV=0
+
+			if [ "${PATH%$HOME/.local/bin*}" = "$PATH" ]; then
+				export PATH="$HOME/.local/bin:$PATH"
+			fi
+
+			export XDG_DATA_HOME=$HOME/.local/share
+			export XDG_CONFIG_HOME=$HOME/.config
+			export XDG_CACHE_HOME=$HOME/.cache
+
+			export LESSHISTFILE=-
+
+			if [ -x /usr/bin/vim ]; then
+				export EDITOR=/usr/bin/vim
+			elif [ -x /usr/bin/vi ]; then
+				export EDITOR=/usr/bin/vi
+			elif [ -x /bin/nano ]; then
+				export EDITOR=/bin/nano
+			else
+				export EDITOR=
+			fi
+
+			export VISUAL="$EDITOR"
+			;;
+	esac
+}
+
+_my_env
+
+unset _my_env
