@@ -21,14 +21,13 @@ _my_env () {
 
 			export LESSHISTFILE=-
 
-			if [ -x /usr/bin/vim ]; then
-				export EDITOR=/usr/bin/vim
-			elif [ -x /usr/bin/vi ]; then
-				export EDITOR=/usr/bin/vi
-			elif [ -x /bin/nano ]; then
-				export EDITOR=/bin/nano
-			else
-				export EDITOR=
+			if [ -x /usr/bin/vim ]
+			then export EDITOR=/usr/bin/vim
+			elif [ -x /usr/bin/vi ]
+			then export EDITOR=/usr/bin/vi
+			elif [ -x /bin/nano ]
+			then export EDITOR=/bin/nano
+			else export EDITOR=
 			fi
 
 			export VISUAL="$EDITOR"
@@ -39,3 +38,5 @@ _my_env () {
 _my_env
 
 unset _my_env
+
+# vim:ft=sh
