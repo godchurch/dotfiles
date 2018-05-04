@@ -4,11 +4,11 @@ if [ -n "$BASH_VERSION" ]; then
 	fi
 fi
 
-case "${MY_ENV}" in
-	0)
+case "${myEnvironment}" in
+	sourced)
 		;;
 	*)
-		export MY_ENV=0
+		export myEnvironment="sourced"
 
 		if [ "${PATH%$HOME/.local/bin*}" = "${PATH}" ]; then
 			export PATH="${HOME}/.local/bin:${PATH}"
