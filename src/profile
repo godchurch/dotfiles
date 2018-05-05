@@ -5,12 +5,22 @@ if [ -n "$BASH_VERSION" ]; then
 fi
 
 case "${myEnvironment}" in
-	sourced)
+	1)
 		;;
 	*)
-		export myEnvironment="sourced"
+		export myEnvironment="1"
 
-		if [ "${PATH%$HOME/.local/bin*}" = "${PATH}" ]; then
+		IFS=:
+		isThere=0
+		for i in ${PATH}; do
+			if [ "${HOME}/.local/bin" = "${i}" ]; then
+				isThere=1
+				break
+			fi
+		done
+		IFS=
+
+		if [ "${isThere}" = 0 ]; then
 			export PATH="${HOME}/.local/bin:${PATH}"
 		fi
 
