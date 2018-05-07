@@ -1,69 +1,22 @@
-editPath()
-{
-	local OPTIND
-	local flagOption=''
-	local flagRemove=0
-	local flagPrepend=0
-	local flagAppend=0
-
-	while getopts ":rpa" flagOption
-	do
-		case ${flagOption} in
-			r) flagRemove=1;;
-			p) flagPrepend=1;;
-			a) flagAppend=1;;
-			\?) printf "E: Invalid Option: -%s\n" "${OPTARG}" 1>&2; exit 1;;
-		esac
-	done
-	shift $((OPTIND -1))
-
-	local hasAtLeastOne=0
-	for index in "${flagRemove}" "${flagPrepend}" "${flagAppend}"
-	do
-		[ "${index}" -eq 1 ] && hasAtLeastOne=$((hasAtLeastOne +1))
-	done
-
-	if [ "${hasAtLeastOne}" -ne 1 ]; then
-		if [ "${hasAtLeastOne}" -lt 1 ]; then
-			printf "E: No flags have been set\n" 1>&2
-		elif [ "${hasAtLeastOne}" -gt 1 ]; then
-			printf "E: Only one  flag can  be set at a time\n" 1>&2
-		fi
-		exit 1
-	else
-		local inputString="${1}"
-
-		if [ -z "${inputString}" ]; then
-			printf "E: No string specified\n" 1>&2
-			exit 1
-		fi
-	fi
-
-        local IFS=':'
-        local newPath
-
+if [ -d "${HOME}/.local/bin" ]; then
+        IFS=':'
+        newPath=''
         for index in ${PATH}; do
-                if [ "${index}" != "${1}" ]; then
+        	if [ "${index}" != "${HOME}/.local/bin" ]; then
 			newPath="${newPath:+${newPath}:}${index}"
-                fi
+        	fi
         done
-        PATH="${newPath}"
-
-	if [ "${flagPrepend}" = 1 ]; then
-		PATH="${1}${PATH:+:${PATH}}"
-	elif [ "${flagAppend}" = 1 ]; then
-		PATH="${PATH:+${PATH}:}${1}"
+	if [ -n "${newPath}" ]; then
+		export PATH="$HOME/.local/bin:${newPath}"
 	fi
+	IFS=''
+fi
 
-	export PATH
-}
-for index in "$HOME/bin" "$HOME/.local/bin"
-do
-	[ -d "${index}" ] && editPath -p "${index}"
-done
+unset newPath index
 
-export editPath
 export myEnvironment=1
+
+export LS_COLORS='di=1:fi=0:ln=36:pi=33;40:so=35:bd=33;40:cd=33;40:or=31:mi=0:ex=32'
 
 export XDG_DATA_HOME=${HOME}/.local/share
 export XDG_CONFIG_HOME=${HOME}/.config
@@ -78,9 +31,9 @@ elif [ -x /usr/bin/vi ]; then
 elif [ -x /bin/nano ]; then
 	export EDITOR=/bin/nano
 else
-	export EDITOR=
+	export EDITOR=''
 fi
 
-export VISUAL="$EDITOR"
+export VISUAL="${EDITOR:-}"
 
 # vim:ft=sh
