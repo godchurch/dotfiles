@@ -1,18 +1,51 @@
-if [ -d "${HOME}/.local/bin" ]; then
-        IFS=':'
-        newPath=''
-        for index in ${PATH}; do
-        	if [ "${index}" != "${HOME}/.local/bin" ]; then
-			newPath="${newPath:+${newPath}:}${index}"
-        	fi
-        done
-	if [ -n "${newPath}" ]; then
-		export PATH="$HOME/.local/bin:${newPath}"
-	fi
-	IFS=''
-fi
+editPath()
+{
+    local flagOption=0 hasOptions=0
+    local hasPrepend=0 hasAppend=0
 
-unset newPath index
+    local OPTIND OPTARG
+
+    while getopts ":pa" flagOption
+    do
+        case "${flagOption}" in
+            p) hasPrepend=1; hasOptions=$((hasOptions +1));;
+            a) hasAppend=1;  hasOptions=$((hasOptions +1));;
+            \?) printf "E: Invalid Option: -${OPTARG}\n"; return 1;;
+        esac
+    done
+    shift $((OPTIND -1))
+
+    local inputPath="${1}"
+    if [ "${hasOptions}" -lt 1 ]; then
+        printf "E: No options specified.\n" 1>&2; return 1
+    elif [ "${hasOptions}" -gt 1 ]; then
+        printf "E: One option is allowed at a time.\n" 1>&2; return 1
+    elif [ -z "${inputPath}" ]; then
+        printf "Directory not specified.\n" 1>&2; return 1
+    fi
+
+    case ${PATH} in
+        *${inputPath}*)
+            local IFS=':' index=0 newPath=''
+            for index in ${PATH}
+            do
+                [ "${index}" != "${inputPath}" ] && \
+                    newPath="${newPath:+${newPath}:}${index}"
+            done
+            PATH="${newPath}"
+            ;;
+    esac
+
+    [ "${hasPrepend}" -eq 1 ] && PATH="${inputPath}:${PATH}"
+    [ "${hasAppend}" -eq 1 ] && PATH="${PATH}:${inputPath}"
+
+    return 0
+}
+
+if [ -d "${HOME}/.local/bin" ]; then
+    editPath -p "${HOME}/.local/bin"
+    export PATH
+fi
 
 export myEnvironment=1
 
