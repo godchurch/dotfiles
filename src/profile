@@ -1,72 +1,56 @@
-editPath()
+removePath()
 {
-    local flagOption=0 hasOptions=0
-    local hasPrepend=0 hasAppend=0
-
-    local OPTIND OPTARG
-
-    while getopts ":pa" flagOption
-    do
-        case "${flagOption}" in
-            p) hasPrepend=1; hasOptions=$((hasOptions +1));;
-            a) hasAppend=1;  hasOptions=$((hasOptions +1));;
-            \?) printf "E: Invalid Option: -${OPTARG}\n"; return 1;;
-        esac
-    done
-    shift $((OPTIND -1))
-
-    local inputPath="${1}"
-    if [ "${hasOptions}" -lt 1 ]; then
-        printf "E: No options specified.\n" 1>&2; return 1
-    elif [ "${hasOptions}" -gt 1 ]; then
-        printf "E: One option is allowed at a time.\n" 1>&2; return 1
-    elif [ -z "${inputPath}" ]; then
-        printf "Directory not specified.\n" 1>&2; return 1
-    fi
-
     case ${PATH} in
-        *${inputPath}*)
-            local IFS=':' index=0 newPath=''
-            for index in ${PATH}
+        *${1}*)
+            local IFS=':' dir='0' newPath=''
+            for dir in ${PATH}
             do
-                [ "${index}" != "${inputPath}" ] && \
-                    newPath="${newPath:+${newPath}:}${index}"
+                if [ "${dir}" != "${1}" ]; then
+                    newPath="${newPath:+${newPath}:}${dir}"
+                fi
             done
             PATH="${newPath}"
             ;;
     esac
+}
 
-    [ "${hasPrepend}" -eq 1 ] && PATH="${inputPath}:${PATH}"
-    [ "${hasAppend}" -eq 1 ] && PATH="${PATH}:${inputPath}"
+prependPath()
+{
+    removePath "${1}"
+    PATH="${1}:${PATH}"
+}
 
-    return 0
+appendPath()
+{
+    removePath "${1}"
+    PATH="${PATH}:${1}"
 }
 
 if [ -d "${HOME}/.local/bin" ]; then
-    editPath -p "${HOME}/.local/bin"
+    prependPath "${HOME}/.local/bin"
     export PATH
 fi
 
-export myEnvironment=1
+export myEnvironment='1'
 
 export LS_COLORS='di=1:fi=0:ln=36:pi=33;40:so=35:bd=33;40:cd=33;40:or=31:mi=0:ex=32'
 
-export XDG_DATA_HOME=${HOME}/.local/share
-export XDG_CONFIG_HOME=${HOME}/.config
-export XDG_CACHE_HOME=${HOME}/.cache
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
 
-export LESSHISTFILE=-
+export LESSHISTFILE='-'
 
+unset EDITOR
 if [ -x /usr/bin/vim ]; then
-	export EDITOR=/usr/bin/vim
+	EDITOR=/usr/bin/vim
 elif [ -x /usr/bin/vi ]; then
-	export EDITOR=/usr/bin/vi
+	EDITOR=/usr/bin/vi
 elif [ -x /bin/nano ]; then
-	export EDITOR=/bin/nano
-else
-	export EDITOR=''
+	EDITOR=/bin/nano
 fi
 
-export VISUAL="${EDITOR:-}"
+export EDITOR="${EDITOR}"
+export VISUAL="${EDITOR}"
 
 # vim:ft=sh
