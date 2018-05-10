@@ -1,34 +1,43 @@
+if [ "${myEnvironment}" = 1 ]; then
+    return 0
+fi
+
 removePath()
 {
+    local inputPath="${1}"
+    local internalPath=''
     case ${PATH} in
-        *${1}*)
-            local IFS=':' dir='0' newPath=''
-            for dir in ${PATH}
+        (*${inputPath}*)
+            local IFS=':'
+            local directory=''
+            for directory in ${PATH}
             do
-                if [ "${dir}" != "${1}" ]; then
-                    newPath="${newPath:+${newPath}:}${dir}"
+                if [ "${directory}" != "${inputPath}" ]
+                then
+                    internalPath="${internalPath:+${internalPath}:}${directory}"
                 fi
             done
-            PATH="${newPath}"
             ;;
     esac
+    echo "PATH='${internalPath:-${PATH}}'"
 }
 
 prependPath()
 {
-    removePath "${1}"
-    PATH="${1}:${PATH}"
+    local inputPath="${1}"
+    eval $(removePath "${inputPath}")
+    echo "PATH='${inputPath}:${PATH}'"
 }
 
 appendPath()
 {
-    removePath "${1}"
-    PATH="${PATH}:${1}"
+    local inputPath="${1}"
+    eval $(removePath "${inputPath}")
+    echo "PATH='${PATH}:${inputPath}'"
 }
 
 if [ -d "${HOME}/.local/bin" ]; then
-    prependPath "${HOME}/.local/bin"
-    export PATH
+    eval export $(prependPath "${HOME}/.local/bin")
 fi
 
 export myEnvironment='1'
