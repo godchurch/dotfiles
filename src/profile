@@ -5,7 +5,7 @@ fi
 removePath()
 {
     local inputPath="${1}"
-    local internalPath=''
+    local customPath=''
     case ${PATH} in
         (*${inputPath}*)
             local IFS=':'
@@ -14,30 +14,31 @@ removePath()
             do
                 if [ "${directory}" != "${inputPath}" ]
                 then
-                    internalPath="${internalPath:+${internalPath}:}${directory}"
+                    customPath="${customPath:+${customPath}:}${directory}"
                 fi
             done
             ;;
     esac
-    echo "PATH='${internalPath:-${PATH}}'"
+    echo "${customPath:-${PATH}}"
 }
 
 prependPath()
 {
     local inputPath="${1}"
-    eval $(removePath "${inputPath}")
-    echo "PATH='${inputPath}:${PATH}'"
+    local customPath="$(removePath "${inputPath}")"
+    echo "${inputPath}:${customPath}"
 }
 
 appendPath()
 {
     local inputPath="${1}"
-    eval $(removePath "${inputPath}")
-    echo "PATH='${PATH}:${inputPath}'"
+    local customPath="$(removePath "${inputPath}")"
+    echo "${customPath}:${inputPath}"
 }
 
 if [ -d "${HOME}/.local/bin" ]; then
-    eval export $(prependPath "${HOME}/.local/bin")
+    PATH=$(prependPath "${HOME}/.local/bin")
+    export PATH
 fi
 
 export myEnvironment='1'
