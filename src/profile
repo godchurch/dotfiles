@@ -1,63 +1,59 @@
 if [ "${myEnvironment}" = 1 ]; then
-    return 0
+  return 0
 fi
 
-removePath()
-{
-    local inputPath="${1}"
-    local customPath=''
-    case ${PATH} in
-        (*${inputPath}*)
-            local IFS=':'
-            local directory=''
-            for directory in ${PATH}
-            do
-                if [ "${directory}" != "${inputPath}" ]
-                then
-                    customPath="${customPath:+${customPath}:}${directory}"
-                fi
-            done
-            ;;
-    esac
-    echo "${customPath:-${PATH}}"
+removePath() {
+  local inputPath="${inputPath:-$1}"
+  local customPath=''
+  case "${PATH}" in
+    *${inputPath}*)
+      local IFS=':'
+      local directory=''
+      for directory in ${PATH}; do
+        if [ "${directory}" != "${inputPath}" ]; then
+          customPath="${customPath:+${customPath}:}${directory}"
+        fi
+      done
+      ;;
+  esac
+  echo "${customPath:-${PATH}}"
 }
 
-prependPath()
-{
-    local inputPath="${1}"
-    local customPath="$(removePath "${inputPath}")"
-    echo "${inputPath}:${customPath}"
+prependPath() {
+  local inputPath="$1"
+  local customPath="$(removePath)"
+  echo "${inputPath}:${customPath}"
 }
 
-appendPath()
-{
-    local inputPath="${1}"
-    local customPath="$(removePath "${inputPath}")"
-    echo "${customPath}:${inputPath}"
+appendPath() {
+  local inputPath="$1"
+  local customPath="$(removePath)"
+  echo "${customPath}:${inputPath}"
 }
 
 if [ -d "${HOME}/.local/bin" ]; then
-    PATH=$(prependPath "${HOME}/.local/bin")
-    export PATH
+  PATH=$(prependPath "${HOME}/.local/bin")
+  export PATH
 fi
 
-export myEnvironment='1'
+export myEnvironment=1
 
-export LS_COLORS='di=1:fi=0:ln=36:pi=33;40:so=35:bd=33;40:cd=33;40:or=31:mi=0:ex=32'
+LS_COLORS="di=1:fi=0:ln=36:pi=33;40:so=35:bd=33;40:cd=33;40:or=31:mi=0:ex=32"
+export LS_COLORS
 
 export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
 
-export LESSHISTFILE='-'
+export LESSHISTFILE="-"
 
 unset EDITOR
 if [ -x /usr/bin/vim ]; then
-	EDITOR=/usr/bin/vim
+  EDITOR=/usr/bin/vim
 elif [ -x /usr/bin/vi ]; then
-	EDITOR=/usr/bin/vi
+  EDITOR=/usr/bin/vi
 elif [ -x /bin/nano ]; then
-	EDITOR=/bin/nano
+  EDITOR=/bin/nano
 fi
 
 export EDITOR="${EDITOR}"

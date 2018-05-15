@@ -1,31 +1,31 @@
-order+="volume master"
-order+="tztime local"
-order+="wireless _first_"
-order+="ethernet _first_"
+order += "volume master"
+order += "tztime local"
+order += "wireless _first_"
+order += "ethernet _first_"
 
 general {
-  color_good    ="#FFFFFF"
-  color_degraded="#FFEB3B"
-  color_bad     ="#F44336"
-  interval      =30
+  color_good = "#FFFFFF"
+  color_degraded = "#FFEB3B"
+  color_bad = "#F44336"
+  interval = 30
 }
 
 volume master {
-  format      ="%volume"
-  format_muted="muted (%volume)"
-  device      ="pulse"
+  format = "%volume"
+  format_muted = "muted (%volume)"
+  device = "pulse"
 }
 
 tztime local {
-  format="%H:%M %m/%d"
+  format = "%H:%M %m/%d"
 }
 
 wireless _first_ {
-  format_up  ="WIFI (%quality at %essid) %ip"
-  format_down="WIFI"
+  format_up = "WIFI (%quality at %essid) %ip"
+  format_down = "WIFI"
 }
 
 ethernet _first_ {
-  format_up  ="ETH %ip"
-  format_down="ETH"
+  format_up = "ETH %ip"
+  format_down = "ETH"
 }

@@ -1,61 +1,108 @@
 #!/bin/bash
 
-set -e
+declare -- has_verbose=0
+while getopts ":v" flag; do
+  case "${flag}" in
+    v)
+      has_verbose=1
+      ;;
+    \?)
+      echo "Unknown flag: -${OPTARG}" >&2
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND -1))
 
-type /usr/bin/pulseaudio /usr/bin/pactl &>/dev/null || exit 1
+declare -a missing_dependencies=()
+declare -a dependencies=("pulseaudio" "pactl")
 
-if /usr/bin/pulseaudio --check; then
-	PA_INFO="$(/usr/bin/pactl info)"
-else
-	exit 1
+for executable in "${dependencies[@]}"; do
+  if ! [[ -x "/usr/bin/${executable}" ]]; then
+    missing_dependencies+=("/usr/bin/${executable}")
+  fi
+done
+
+if [[ "${#missing_dependencies}" -gt "0" ]]; then
+  if [[ "${has_verbose}" -eq 1 ]]; then
+    echo "E: Missing dependencies:" >&2
+    for executable in "${missing_dependencies[@]}"; do
+      echo -e "\t${executable}" >&2
+    done
+  fi
+  exit 1
 fi
 
-_GetDefault ()
-{
-	local default value name null
+if ! /usr/bin/pulseaudio --check; then
+  if [[ "${has_verbose}" -eq 1 ]]; then
+    echo "E: Pulseaudio is not running." >&2
+    echo -e "\tStart pulseaudio with 'pulseaudio --start'."
+  fi
+  exit 1
+fi
 
-	while read -r default value name null; do
-		if [[ "$default ${value//:/}" == "Default $1" ]]; then
-			DEFAULT="$name"
-			return 0
-		fi
-	done <<< "$PA_INFO"
+declare -A default=([sink]="" [source]="")
+while read -r default name value; do
+  if [[ "${default}" != "Default" ]]; then
+    continue
+  fi
+  case "${name}" in
+    Sink:) default[sink]="${value}" ;;
+    Source) default[source]="${value}" ;;
+    *) continue ;;
+  esac
+done < <(/usr/bin/pactl info)
 
-	return 1
-}
-
+alias pactl="/usr/bin/pactl"
 case "$1" in
-	default)
-		_GetDefault Sink
-		/usr/bin/pactl set-sink-volume "$DEFAULT" 50%
-		/usr/bin/pactl set-sink-mute "$DEFAULT" 0
-		/usr/bin/pactl suspend-sink "$DEFAULT" 0
+  default)
+    [[ -z "${default[sink]}" ]] && exit 1
+    [[ -z "${default[source]}" ]] && exit 1
 
-		_GetDefault Source
-		/usr/bin/pactl set-source-volume "$DEFAULT" 0%
-		/usr/bin/pactl set-source-mute "$DEFAULT" 1
-		/usr/bin/pactl suspend-source "$DEFAULT" 0
-		;;
-	sink)
-		_GetDefault Sink
-		case "$2" in
-			up  ) /usr/bin/pactl set-sink-volume "$DEFAULT" +5%;;
-			down) /usr/bin/pactl set-sink-volume "$DEFAULT" -5%;;
-			mute) /usr/bin/pactl set-sink-mute "$DEFAULT" toggle;;
-			*   ) ;;
-		esac
-		;;
-	source)
-		_GetDefault Source
-		case "$2" in
-			up  ) /usr/bin/pactl set-source-volume "$DEFAULT" +5%;;
-			down) /usr/bin/pactl set-source-volume "$DEFAULT" -5%;;
-			mute) /usr/bin/pactl set-source-mute "$DEFAULT" toggle;;
-			*   ) ;;
-		esac
-		;;
-	*)
-		;;
+    pactl set-sink-volume "${default[sink]}" 50%
+    pactl set-sink-mute "${default[sink]}" 0
+    pactl suspend-sink "${default[sink]}" 0
+
+    pactl set-source-volume "${default[source]}" 0%
+    pactl set-source-mute "${default[source]}" 1
+    pactl suspend-source "${default[source]}" 0
+    ;;
+  sink)
+    [[ -z "${default[sink]}" ]] && exit 1
+
+    case "$2" in
+      up)
+        pactl set-sink-volume "${default[sink]}" +5%
+        ;;
+      down)
+        pactl set-sink-volume "${default[sink]}" -5%
+        ;;
+      mute)
+        pactl set-sink-mute "${default[sink]}" toggle
+        ;;
+      *)
+        ;;
+    esac
+    ;;
+  source)
+    [[ -z "${default[source]}" ]] && exit 1
+
+    case "$2" in
+      up)
+        pactl set-source-volume "${default[source]}" +5%
+        ;;
+      down)
+        pactl set-source-volume "${default[source]}" -5%
+        ;;
+      mute)
+        pactl set-source-mute "${default[source]}" toggle
+        ;;
+      *)
+        ;;
+    esac
+    ;;
+  *)
+    ;;
 esac
 
 exit 0
