@@ -61,5 +61,3 @@ fi
 
 export EDITOR="${EDITOR}"
 export VISUAL="${EDITOR}"
-
-# vim:ft=sh
