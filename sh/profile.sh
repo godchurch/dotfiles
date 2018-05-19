@@ -21,13 +21,13 @@ remove_path() {
 
 prepend_path() {
   local input_path="$1"
-  local customPath="$(remove_path)"
+  local custom_path="$(remove_path)"
   echo "${input_path}:${custom_path}"
 }
 
 append_path() {
   local input_path="$1"
-  local customPath="$(remove_path)"
+  local custom_path="$(remove_path)"
   echo "${custom_path}:${input_path}"
 }
 
