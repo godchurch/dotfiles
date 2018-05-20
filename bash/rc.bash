@@ -1,16 +1,12 @@
-if [[ $- != *i* ]]; then
-  return 0
-fi
+[[ $- != *i* ]] && return
 
 if [[ -f "${HOME}/.profile" ]]; then
   source "${HOME}/.profile"
 fi
 
-if [[ -n "${DISPLAY}" ]]; then
-  shopt -s checkwinsize
-fi
+[[ -n "${DISPLAY}" ]] && shopt -s checkwinsize
 
-PS1='\[\e[1m\]●\[\e[0m\] [$?] \u:\h [\w]\n\$ '
+PS1='[\u@\h \W]\$ '
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
