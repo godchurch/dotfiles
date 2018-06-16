@@ -39,9 +39,6 @@ fi
 my_environment=1
 export my_environment
 
-LS_COLORS="di=1:fi=0:ln=36:pi=33;40:so=35:bd=33;40:cd=33;40:or=31:mi=0:ex=32"
-export LS_COLORS
-
 XDG_DATA_HOME="${HOME}/.local/share"
 XDG_CONFIG_HOME="${HOME}/.config"
 XDG_CACHE_HOME="${HOME}/.cache"

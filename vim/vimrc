@@ -52,11 +52,11 @@ endif
 
 let g:is_posix = 1
 
-if &t_Co >= 16
-  try | colorscheme solarized | catch | endtry
-else
-  try | colorscheme default | catch | endtry
-endif
+"if &t_Co >= 16
+"  try | colorscheme solarized | catch | endtry
+"else
+"  try | colorscheme default | catch | endtry
+"endif
 
 func! DeleteTrailingWS()
   exe "normal mz"
