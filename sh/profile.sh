@@ -2,40 +2,6 @@ if [ "${my_environment}" = 1 ]; then
   return 0
 fi
 
-remove_path() {
-  local input_path="${input_path:-$1}"
-  local custom_path=""
-  case "${PATH}" in
-    *${input_path}*)
-      local IFS=":"
-      local directory=""
-      for directory in ${PATH}; do
-        if [ "${directory}" != "${input_path}" ]; then
-          custom_path="${custom_path:+${custom_path}:}${directory}"
-        fi
-      done
-      ;;
-  esac
-  echo "${custom_path:-${PATH}}"
-}
-
-prepend_path() {
-  local input_path="$1"
-  local custom_path="$(remove_path)"
-  echo "${input_path}:${custom_path}"
-}
-
-append_path() {
-  local input_path="$1"
-  local custom_path="$(remove_path)"
-  echo "${custom_path}:${input_path}"
-}
-
-if [ -d "${HOME}/.local/bin" ]; then
-  PATH="$(prepend_path "${HOME}/.local/bin")"
-  export PATH
-fi
-
 my_environment=1
 export my_environment
 
