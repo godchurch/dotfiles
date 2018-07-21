@@ -10,23 +10,16 @@ edit_path ()
 {
     [ $# -gt 0 ] || return 1
 
-    local PROGNAME \
-          DELIMITER \
-          REQUIRESTWO \
-          ACTIONS \
-          INPUTSTRING \
-          OUTPUTSTRING \
+    local PROGNAME="edit_path" \
+          DELIMITER=":" \
+          REQUIRESTWO="false" \
+          ACTIONS= \
+          INPUTSTRING= \
+          OUTPUTSTRING= \
           OPTION \
           ARGUMENT1 \
           ARGUMENT2 \
           IFS
-
-    PROGNAME="edit_path"
-    DELIMITER=":"
-    REQUIRESTWO="false"
-    ACTIONS=
-    INPUTSTRING=
-    OUTPUTSTRING=
 
     while getopts ":b:L:rpatTfFdDeE" OPTION; do
         case "${OPTION}" in
@@ -35,7 +28,7 @@ edit_path ()
             ;;
             L)
                 if [ -n "${OUTPUTSTRING}" ]; then
-                  printf "%s: option can only be specified once -- %c\n" "${PROGNAME}" "${OPTARG}" 1>&2
+                  printf "%s: option can only be specified once -- %c\n" "${PROGNAME}" "${OPTION}" >&2
                   return 1
                 fi
                 OUTPUTSTRING="${OPTARG}"
@@ -61,22 +54,26 @@ edit_path ()
 
     IFS="${DELIMITER}"
 
-    if [ "${REQUIRESTWO}" = "true" ] && [ -z "${OUTPUTSTRING}" ]; then
-        printf "%s: action(s) require list flag\n" "${PROGNAME}" 1>&2
-        return 1
-    fi
-
-    if [ -z "${ACTIONS}" ]; then
-        if [ -n "${OUTPUTSTRING}" ]; then
-            printf "%s: list flag requires an action option\n" "${PROGNAME}" 1>&2
-            return 1
-        elif [ $# -lt 1 ]; then
-          printf "%s: no arguments supplied\n" "${PROGNAME}" 1>&2
-          return 1
-        fi
-        printf "%s\n" "$*"
-        return 0
-    fi
+    case $# in
+        0)
+            if [ -z "${OUTPUTSTRING}" ]; then
+                printf "%s: no arguments to create an output list\n" "${PROGNAME}" 1>&2
+                return 1
+            elif [ -z "${ACTIONS}" ]; then
+                printf "%s: no action(s) flags set to modify output list\n" "${PROGNAME}" 1>&2
+                return 1
+            fi
+        ;;
+        *)
+            if [ "${REQUIRESTWO}" = "true" ] && [ -z "${OUTPUTSTRING}" ]; then
+                printf "%s: action(s) require list flag to be set\n" "${PROGNAME}" 1>&2
+                return 1
+            elif [ -z "${ACTIONS}" ]; then
+                printf "%s\n" "$*"
+                return 0
+            fi
+        ;;
+    esac
 
     [ -n "${OUTPUTSTRING}" ] && INPUTSTRING="$*" || OUTPUTSTRING="$*"
 
