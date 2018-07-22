@@ -1,13 +1,10 @@
 # ~/.profile: executed by the command interpreter for login shells.
 
-if [ -n "${BASH_VERSION}" ]; then
-    if [ -f "${HOME}/.bashrc" ]; then
-        . "${HOME}/.bashrc"
-    fi
+if [ -n "${BASH_VERSION}" ] && [ -f "${HOME}/.bashrc" ]; then
+    . "${HOME}/.bashrc"
 fi
 
-edit_path ()
-{
+edit_path() {
     [ $# -gt 0 ] || return 1
 
     local PROGNAME="edit_path" \
@@ -23,28 +20,28 @@ edit_path ()
 
     while getopts ":b:L:rpatTfFdDeE" OPTION; do
         case "${OPTION}" in
-            b)
+            b )
                 DELIMITER="${OPTARG}"
             ;;
-            L)
+            L )
                 if [ -n "${OUTPUTSTRING}" ]; then
                   printf "%s: option can only be specified once -- %c\n" "${PROGNAME}" "${OPTION}" >&2
                   return 1
                 fi
                 OUTPUTSTRING="${OPTARG}"
             ;;
-            [rpatfde])
+            [rpatfde] )
                 REQUIRESTWO="true";
-                ACTIONS="${ACTIONS:+${ACTIONS} }${OPTION}"
+                ACTIONS="${ACTIONS:+${ACTIONS}:}${OPTION}"
             ;;
-            [TFDE])
-                ACTIONS="${ACTIONS:+${ACTIONS} }${OPTION}"
+            [TFDE] )
+                ACTIONS="${ACTIONS:+${ACTIONS}:}${OPTION}"
             ;;
-            :)
+            : )
                 printf "%s: option requires an argument -- %c\n" "${PROGNAME}" "${OPTARG}" 1>&2
                 return 1
             ;;
-            \?)
+            \? )
                 printf "%s: illegal option -- %c\n" "${PROGNAME}" "${OPTARG}" 1>&2
                 return 1
             ;;
@@ -53,38 +50,27 @@ edit_path ()
     shift $((OPTIND - 1))
 
     IFS="${DELIMITER}"
-
-    case $# in
-        0)
-            if [ -z "${OUTPUTSTRING}" ]; then
-                printf "%s: no arguments to create an output list\n" "${PROGNAME}" 1>&2
-                return 1
-            elif [ -z "${ACTIONS}" ]; then
-                printf "%s: no action(s) flags set to modify output list\n" "${PROGNAME}" 1>&2
-                return 1
-            fi
-        ;;
-        *)
-            if [ "${REQUIRESTWO}" = "true" ] && [ -z "${OUTPUTSTRING}" ]; then
-                printf "%s: action(s) require list flag to be set\n" "${PROGNAME}" 1>&2
-                return 1
-            elif [ -z "${ACTIONS}" ]; then
-                printf "%s\n" "$*"
-                return 0
-            fi
-        ;;
-    esac
-
     [ -n "${OUTPUTSTRING}" ] && INPUTSTRING="$*" || OUTPUTSTRING="$*"
 
-    IFS=" "
+    if [ -z "${OUTPUTSTRING}" ]; then
+        printf "%s: no arguments to create an output list\n" "${PROGNAME}" 1>&2
+        return 1
+    elif [ "${REQUIRESTWO}" = "true" ] && [ -z "${INPUTSTRING}" ]; then
+        printf "%s: action(s) require list flag to be set\n" "${PROGNAME}" 1>&2
+        return 1
+    elif [ -z "${ACTIONS}" ]; then
+        printf "%s\n" "${OUTPUTSTRING}"
+        return 0
+    fi
+
+    IFS=":"
     set -- ${ACTIONS}
     IFS="${DELIMITER}"
     ACTIONS="$*"
 
     for OPTION in ${ACTIONS}; do
         case "${OPTION}" in
-            r)
+            r )
                 set --
                 for ARGUMENT1 in ${OUTPUTSTRING}; do
                     for ARGUMENT2 in ${INPUTSTRING}; do
@@ -94,15 +80,15 @@ edit_path ()
                 done
                 OUTPUTSTRING="$*"
             ;;
-            p)
+            p )
                 set -- ${INPUTSTRING} ${OUTPUTSTRING}
                 OUTPUTSTRING="$*"
             ;;
-            a)
+            a )
                 set -- ${OUTPUTSTRING} ${INPUTSTRING}
                 OUTPUTSTRING="$*"
             ;;
-            t)
+            t )
                 set --
                 for ARGUMENT1 in ${INPUTSTRING}; do
                     for ARGUMENT2 in "$@"; do
@@ -112,7 +98,7 @@ edit_path ()
                 done
                 INPUTSTRING="$*"
             ;;
-            T)
+            T )
                 set --
                 for ARGUMENT1 in ${OUTPUTSTRING}; do
                     for ARGUMENT2 in "$@"; do
@@ -122,7 +108,7 @@ edit_path ()
                 done
                 OUTPUTSTRING="$*"
             ;;
-            f)
+            f )
                 set --
                 for ARGUMENT1 in ${INPUTSTRING}; do
                     [ -f "${ARGUMENT1}" ] || continue 1
@@ -130,7 +116,7 @@ edit_path ()
                 done
                 INPUTSTRING="$*"
             ;;
-            d)
+            d )
                 set --
                 for ARGUMENT1 in ${INPUTSTRING}; do
                     [ -d "${ARGUMENT1}" ] || continue 1
@@ -138,7 +124,7 @@ edit_path ()
                 done
                 INPUTSTRING="$*"
             ;;
-            e)
+            e )
                 set --
                 for ARGUMENT1 in ${INPUTSTRING}; do
                     [ -e "${ARGUMENT1}" ] || continue 1
@@ -146,7 +132,7 @@ edit_path ()
                 done
                 INPUTSTRING="$*"
             ;;
-            F)
+            F )
                 set --
                 for ARGUMENT1 in ${OUTPUTSTRING}; do
                     [ -f "${ARGUMENT1}" ] || continue 1
@@ -154,7 +140,7 @@ edit_path ()
                 done
                 OUTPUTSTRING="$*"
             ;;
-            D)
+            D )
                 set --
                 for ARGUMENT1 in ${OUTPUTSTRING}; do
                     [ -d "${ARGUMENT1}" ] || continue 1
@@ -162,7 +148,7 @@ edit_path ()
                 done
                 OUTPUTSTRING="$*"
             ;;
-            E)
+            E )
                 set --
                 for ARGUMENT1 in ${OUTPUTSTRING}; do
                     [ -e "${ARGUMENT1}" ] || continue 1
