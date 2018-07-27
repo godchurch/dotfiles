@@ -23,18 +23,18 @@ TERM tmux*
 TERM vt100
 TERM xterm*
 
-# ------------------------------------------------------------------
-# |Attribute codes:  |Text color codes:  |Background color codes:  |
-# |------------------|-------------------|-------------------------|
-# |00=normal         |30=black           |40=black                 |
-# |01=bold           |31=red             |40=red                   |
-# |04=underscore     |32=green           |40=green                 |
-# |05=blink          |33=yellow          |40=yellow                |
-# |07=reverse        |34=blue            |40=blue                  |
-# |08=concealed      |35=magenta         |40=magenta               |
-# |                  |36=cyan            |40=cyan                  |
-# |                  |37=white           |40=white                 |
-# ------------------------------------------------------------------
+# ---------------------------------------------------------
+# |  Attribute codes  |  Text codes  |  Background codes  |
+# ---------------------------------------------------------
+# | normal       [00] | black   [30] | black         [40] |
+# | bold         [01] | red     [31] | red           [41] |
+# | underscore   [04] | green   [32] | green         [42] |
+# | blink        [05] | yellow  [33] | yellow        [43] |
+# | reverse      [07] | blue    [34] | blue          [44] |
+# | concealed    [08] | magenta [35] | magenta       [45] |
+# |                   | cyan    [36] | cyan          [46] |
+# |                   | white   [37] | white         [47] |
+# ---------------------------------------------------------
 
 RESET                 0         # reset to "normal" color
 DIR                   00;34     # directory
@@ -165,3 +165,5 @@ EXEC                  00;32     # This is for files with execute permission:
 .opus 00;36
 .spx  00;36
 .xspf 00;36
+
+# vim: ft=dircolors
