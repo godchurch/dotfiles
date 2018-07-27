@@ -1,165 +1,171 @@
 # ~/.profile: executed by the command interpreter for login shells.
 
-if [ -n "${BASH_VERSION}" ] && [ -f "${HOME}/.bashrc" ]; then
-    . "${HOME}/.bashrc"
+if [ -n "${BASH_VERSION}" ]; then
+    if [ -f "${HOME}/.bashrc" ]; then
+        . "${HOME}/.bashrc"
+    fi
 fi
 
-edit_path() {
+edit_path () {
     [ $# -gt 0 ] || return 1
 
-    local PROGNAME="edit_path" \
-          DELIMITER=":" \
-          REQUIRESTWO="false" \
-          ACTIONS= \
-          INPUTSTRING= \
-          OUTPUTSTRING= \
-          OPTION \
-          ARGUMENT1 \
-          ARGUMENT2 \
+    local function_name="edit_path" \
+          requires_two=0 \
+          actions= \
+          input_delimiter=":" \
+          output_delimiter= \
+          input_string= \
+          output_string= \
+          option \
+          argument_1 \
+          argument_2 \
           IFS
 
-    while getopts ":b:L:rpatTfFdDeE" OPTION; do
-        case "${OPTION}" in
-            b )
-                DELIMITER="${OPTARG}"
-            ;;
-            L )
-                if [ -n "${OUTPUTSTRING}" ]; then
-                  printf "%s: option can only be specified once -- %c\n" "${PROGNAME}" "${OPTION}" >&2
-                  return 1
+    while getopts ":L:b:B:rpatTfFdDeE" option; do
+        case "${option}" in
+            b)
+                input_delimiter="${OPTARG}"
+                ;;
+            B)
+                output_delimiter="${OPTARG}"
+                ;;
+            L)
+                if [ -n "${output_string}" ]; then
+                    printf "%s: option specified more than once -- %c\n" "${function_name}" "${option}" >&2
+                    return 1
                 fi
-                OUTPUTSTRING="${OPTARG}"
-            ;;
-            [rpatfde] )
-                REQUIRESTWO="true";
-                ACTIONS="${ACTIONS:+${ACTIONS}:}${OPTION}"
-            ;;
-            [TFDE] )
-                ACTIONS="${ACTIONS:+${ACTIONS}:}${OPTION}"
-            ;;
-            : )
-                printf "%s: option requires an argument -- %c\n" "${PROGNAME}" "${OPTARG}" 1>&2
+                output_string="${OPTARG}"
+                ;;
+            [rpatfde])
+                requires_two=1
+                actions="${actions:+${actions}^}${option}"
+                ;;
+            [TFDE])
+                actions="${actions:+${actions}^}${option}"
+                ;;
+            :)
+                printf "%s: option requires an argument -- %c\n" "${function_name}" "${OPTARG}" >&2
                 return 1
-            ;;
-            \? )
-                printf "%s: illegal option -- %c\n" "${PROGNAME}" "${OPTARG}" 1>&2
+                ;;
+            \?)
+                printf "%s: illegal option -- %c\n" "${function_name}" "${OPTARG}" >&2
                 return 1
-            ;;
+                ;;
         esac
     done
     shift $((OPTIND - 1))
 
-    IFS="${DELIMITER}"
-    [ -n "${OUTPUTSTRING}" ] && INPUTSTRING="$*" || OUTPUTSTRING="$*"
+    [ -z "${output_delimiter}" ] && output_delimiter="${input_delimiter}"
+    IFS="${input_delimiter}"
+    [ -n "${output_string}" ] && input_string="$*" || output_string="$*"
 
-    if [ -z "${OUTPUTSTRING}" ]; then
-        printf "%s: no arguments to create an output list\n" "${PROGNAME}" 1>&2
+    if [ -z "${output_string}" ]; then
+        printf "%s: no arguments to create an output list\n" "${function_name}" >&2
         return 1
-    elif [ "${REQUIRESTWO}" = "true" ] && [ -z "${INPUTSTRING}" ]; then
-        printf "%s: action(s) require list flag to be set\n" "${PROGNAME}" 1>&2
+    elif [ ${requires_two} -eq 1 ] && [ -z "${input_string}" ]; then
+        printf "%s: action(s) require list flag to be set\n" "${function_name}" >&2
         return 1
-    elif [ -z "${ACTIONS}" ]; then
-        printf "%s\n" "${OUTPUTSTRING}"
-        return 0
     fi
 
-    IFS=":"
-    set -- ${ACTIONS}
-    IFS="${DELIMITER}"
-    ACTIONS="$*"
+    IFS="^"
+    set -- ${actions}
+    IFS="${input_delimiter}"
 
-    for OPTION in ${ACTIONS}; do
-        case "${OPTION}" in
-            r )
+    for option in "$@"; do
+        case "${option}" in
+            r)
                 set --
-                for ARGUMENT1 in ${OUTPUTSTRING}; do
-                    for ARGUMENT2 in ${INPUTSTRING}; do
-                        [ "${ARGUMENT1}" = "${ARGUMENT2}" ] && continue 2
+                for argument_1 in ${output_string}; do
+                    for argument_2 in ${input_string}; do
+                        [ "${argument_1}" = "${argument_2}" ] && continue 2
                     done
-                    set -- "$@" "${ARGUMENT1}"
+                    set -- "$@" "${argument_1}"
                 done
-                OUTPUTSTRING="$*"
-            ;;
-            p )
-                set -- ${INPUTSTRING} ${OUTPUTSTRING}
-                OUTPUTSTRING="$*"
-            ;;
-            a )
-                set -- ${OUTPUTSTRING} ${INPUTSTRING}
-                OUTPUTSTRING="$*"
-            ;;
-            t )
+                output_string="$*"
+                ;;
+            p)
+                set -- ${input_string} ${output_string}
+                output_string="$*"
+                ;;
+            a)
+                set -- ${output_string} ${input_string}
+                output_string="$*"
+                ;;
+            t)
                 set --
-                for ARGUMENT1 in ${INPUTSTRING}; do
-                    for ARGUMENT2 in "$@"; do
-                        [ "${ARGUMENT1}" = "${ARGUMENT2}" ] && continue 2
+                for argument_1 in ${input_string}; do
+                    for argument_2 in "$@"; do
+                        [ "${argument_1}" = "${argument_2}" ] && continue 2
                     done
-                    set -- "$@" "${ARGUMENT1}"
+                    set -- "$@" "${argument_1}"
                 done
-                INPUTSTRING="$*"
-            ;;
-            T )
+                input_string="$*"
+                ;;
+            T)
                 set --
-                for ARGUMENT1 in ${OUTPUTSTRING}; do
-                    for ARGUMENT2 in "$@"; do
-                        [ "${ARGUMENT1}" = "${ARGUMENT2}" ] && continue 2
+                for argument_1 in ${output_string}; do
+                    for argument_2 in "$@"; do
+                        [ "${argument_1}" = "${argument_2}" ] && continue 2
                     done
-                    set -- "$@" "${ARGUMENT1}"
+                    set -- "$@" "${argument_1}"
                 done
-                OUTPUTSTRING="$*"
-            ;;
+                output_string="$*"
+                ;;
             f )
                 set --
-                for ARGUMENT1 in ${INPUTSTRING}; do
-                    [ -f "${ARGUMENT1}" ] || continue 1
-                    set -- "$@" "${ARGUMENT1}"
+                for argument_1 in ${input_string}; do
+                    [ -f "${argument_1}" ] || continue 1
+                    set -- "$@" "${argument_1}"
                 done
-                INPUTSTRING="$*"
-            ;;
+                input_string="$*"
+                ;;
             d )
                 set --
-                for ARGUMENT1 in ${INPUTSTRING}; do
-                    [ -d "${ARGUMENT1}" ] || continue 1
-                    set -- "$@" "${ARGUMENT1}"
+                for argument_1 in ${input_string}; do
+                    [ -d "${argument_1}" ] || continue 1
+                    set -- "$@" "${argument_1}"
                 done
-                INPUTSTRING="$*"
-            ;;
+                input_string="$*"
+                ;;
             e )
                 set --
-                for ARGUMENT1 in ${INPUTSTRING}; do
-                    [ -e "${ARGUMENT1}" ] || continue 1
-                    set -- "$@" "${ARGUMENT1}"
+                for argument_1 in ${input_string}; do
+                    [ -e "${argument_1}" ] || continue 1
+                    set -- "$@" "${argument_1}"
                 done
-                INPUTSTRING="$*"
-            ;;
+                input_string="$*"
+                ;;
             F )
                 set --
-                for ARGUMENT1 in ${OUTPUTSTRING}; do
-                    [ -f "${ARGUMENT1}" ] || continue 1
-                    set -- "$@" "${ARGUMENT1}"
+                for argument_1 in ${output_string}; do
+                    [ -f "${argument_1}" ] || continue 1
+                    set -- "$@" "${argument_1}"
                 done
-                OUTPUTSTRING="$*"
-            ;;
+                output_string="$*"
+                ;;
             D )
                 set --
-                for ARGUMENT1 in ${OUTPUTSTRING}; do
-                    [ -d "${ARGUMENT1}" ] || continue 1
-                    set -- "$@" "${ARGUMENT1}"
+                for argument_1 in ${output_string}; do
+                    [ -d "${argument_1}" ] || continue 1
+                    set -- "$@" "${argument_1}"
                 done
-                OUTPUTSTRING="$*"
-            ;;
+                output_string="$*"
+                ;;
             E )
                 set --
-                for ARGUMENT1 in ${OUTPUTSTRING}; do
-                    [ -e "${ARGUMENT1}" ] || continue 1
-                    set -- "$@" "${ARGUMENT1}"
+                for argument_1 in ${output_string}; do
+                    [ -e "${argument_1}" ] || continue 1
+                    set -- "$@" "${argument_1}"
                 done
-                OUTPUTSTRING="$*"
-            ;;
+                output_string="$*"
+                ;;
         esac
     done
 
-    printf "%s\n" "${OUTPUTSTRING}"
+    set -- ${output_string}
+    IFS="${output_delimiter}"
+
+    printf "%s\n" "$*"
     return 0
 }
 
@@ -177,17 +183,14 @@ export XDG_DATA_HOME XDG_CONFIG_HOME XDG_CACHE_HOME
 LESSHISTFILE="-"
 export LESSHISTFILE
 
-unset EDITOR VISUAL
-if [ -x "/usr/bin/vim" ]; then
-    EDITOR="/usr/bin/vim"
-    VISUAL="/usr/bin/vim"
+editors="/usr/bin/vim /usr/bin/vi /bin/nano"
+for editor in ${editors}; do
+    [ -x "${editor}" ] || continue 1
+
+    EDITOR="${editor}"
+    VISUAL="${editor}"
     export EDITOR VISUAL
-elif [ -x "/usr/bin/vi" ]; then
-    EDITOR="/usr/bin/vi"
-    VISUAL="/usr/bin/vi"
-    export EDITOR VISUAL
-elif [ -x "/bin/nano" ]; then
-    EDITOR="/bin/nano"
-    VISUAL="/bin/nano"
-    export EDITOR VISUAL
-fi
+
+    break
+done
+unset editor editors
