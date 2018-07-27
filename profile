@@ -6,10 +6,11 @@ if [ -n "${BASH_VERSION}" ]; then
     fi
 fi
 
-edit_path () {
+ep()
+{
     [ $# -gt 0 ] || return 1
 
-    local function_name="edit_path" \
+    local function_name="ep" \
           requires_two=0 \
           actions= \
           input_delimiter=":" \
@@ -169,7 +170,7 @@ edit_path () {
     return 0
 }
 
-PATH="$(edit_path -L "${PATH}" -rdp "${HOME}/.local/bin" "${HOME}/bin")"
+PATH="$(ep -L "${PATH}" -rdp "${HOME}/.local/bin" "${HOME}/bin")"
 export PATH
 
 LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
@@ -194,5 +195,3 @@ for editor in ${editors}; do
     break
 done
 unset editor editors
-
-# vim: ft=sh
