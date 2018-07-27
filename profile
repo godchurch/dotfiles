@@ -194,3 +194,5 @@ for editor in ${editors}; do
     break
 done
 unset editor editors
+
+# vim: ft=sh
