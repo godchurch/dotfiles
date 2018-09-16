@@ -1,11 +1,6 @@
 #!/bin/sh
 
-if type setxkbmap >/dev/null 2>&1; then
-  setxkbmap -layout us -option caps:escape
-fi
+set -e
 
-if type xset >/dev/null 2>&1; then
-  xset led on
-fi
-
-exit 0
+hash setxkbmap 2> /dev/null && setxkbmap -layout us -option caps:escape
+hash xset 2> /dev/null && xset led on
