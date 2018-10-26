@@ -15,10 +15,18 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
+if command -v notify-send > /dev/null 2>&1; then
+  alert() {
+    notify-send --urgency=low \
+      -i "$(test "$?" -eq 0 && echo terminal || echo error)" \
+      "$(history | tail -n1 | sed -e 's/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//')"
+  }
+fi
+
 if ! shopt -oq posix; then
-  if test -f "/usr/share/bash-completion/bash_completion"; then
-    . "/usr/share/bash-completion/bash_completion"
-  elif test -f "/etc/bash_completion"; then
-    . "/etc/bash_completion"
+  if test -f /usr/share/bash-completion/bash_completion; then
+    . /usr/share/bash-completion/bash_completion
+  elif test -f /etc/bash_completion; then
+    . /etc/bash_completion
   fi
 fi
