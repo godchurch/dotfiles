@@ -1,11 +1,9 @@
 # ~/.profile: executed by the command interpreter for login shells.
 
 if test -n "$PS1"; then
-  if test -n "$BASH"; then
-    if test "$BASH" != "/bin/sh"; then
-      if test -f "$HOME/.bashrc"; then
-        . "$HOME/.bashrc"
-      fi
+  if test -n "$BASH" && test "$BASH" != "/bin/sh"; then
+    if test -f "$HOME/.bashrc"; then
+      . "$HOME/.bashrc"
     fi
   else
     if test "$(id -u)" -eq 0; then
