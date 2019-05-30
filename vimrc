@@ -30,7 +30,7 @@ set expandtab
 set shiftwidth=2
 set tabstop=2
 "set nowrap
-set textwidth=80
+"set textwidth=80
 "set wrapmargin=80
 
 set nobackup
