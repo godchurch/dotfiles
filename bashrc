@@ -1,7 +1,7 @@
 test -z "$PS1" && return 0
 test -n "$DISPLAY" && shopt -s checkwinsize
 
-PS1='[\u@\h \W]\$ '
+PS1='[$?][\u@\h \W]\$ '
 
 alias ls='ls --color=auto'
 alias dir='dir --color=auto'
