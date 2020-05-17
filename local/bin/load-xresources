@@ -1,9 +1,3 @@
 #!/bin/sh
 
-set -e
-
-if test -f "$HOME/.Xresources"; then
-  if test -x /usr/bin/xrdb; then
-    /usr/bin/xrdb -merge "$HOME/.Xresources"
-  fi
-fi
+test -f ~/.Xresources && test -x /usr/bin/xrdb && exec /usr/bin/xrdb -merge ~/.Xresources

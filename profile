@@ -6,22 +6,20 @@ if test -n "$PS1"; then
   fi
 fi
 
-if test -d "$HOME/bin"; then
-  if test -n "${PATH%%$HOME/bin*}"; then
-    if test -n "${PATH%%*:$HOME/bin*}"; then
-      export PATH="$HOME/bin${PATH:+:$PATH}"
-    fi
-  fi
-fi
-
 if test -d "$HOME/.local/bin"; then
   if test -n "${PATH%%$HOME/.local/bin*}"; then
     if test -n "${PATH%%*:$HOME/.local/bin*}"; then
-      export PATH="$HOME/.local/bin${PATH:+:$PATH}"
+      PATH="$HOME/.local/bin${PATH:+:$PATH}"
     fi
   fi
 fi
 
-test -d "/tmp/tmp-$(id -u)" || mkdir "/tmp/tmp-$(id -u)"
+if test -d "$HOME/bin"; then
+  if test -n "${PATH%%$HOME/bin*}"; then
+    if test -n "${PATH%%*:$HOME/bin*}"; then
+      PATH="$HOME/bin${PATH:+:$PATH}"
+    fi
+  fi
+fi
 
 # vim: ft=sh

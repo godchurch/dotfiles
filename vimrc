@@ -1,5 +1,7 @@
 runtime! debian.vim
 
+set viminfofile=NONE
+
 set nocompatible
 set autoread
 set backspace=indent,eol,start
@@ -37,8 +39,8 @@ set nobackup
 set nowritebackup
 set noswapfile
 
-set laststatus=2
-set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
+"set laststatus=2
+"set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
 
 if has("autocmd")
   filetype indent on
@@ -60,7 +62,7 @@ let g:is_posix = 1
 
 func! DeleteTrailingWS()
   exe "normal mz"
-  %s/\s\+$//ge
+  %s/[[:blank:]]\{1,\}$//ge
   exe "normal `z"
 endfunc
 autocmd BufWrite * :call DeleteTrailingWS()
