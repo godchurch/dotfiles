@@ -6,6 +6,14 @@ if test -n "$PS1"; then
   fi
 fi
 
+if EDITOR="$(command -v vim)"; then
+  export EDITOR
+elif EDITOR="$(command -v vi)"; then
+  export EDITOR
+elif EDITOR="$(command -v nano)"; then
+  export EDITOR
+fi
+
 if test -d "$HOME/.local/bin"; then
   if test -n "${PATH%%$HOME/.local/bin*}"; then
     if test -n "${PATH%%*:$HOME/.local/bin*}"; then
