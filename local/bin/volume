@@ -1,45 +1,23 @@
 #!/bin/sh
 
+set -e
+
 unset verbose
 while getopts ":v" flag; do
   case "$flag" in
-    v)
-      verbose=1
-      ;;
-    :)
-      printf 'E: option requires an argument -- %c\n' "$OPTARG" >&2
-      exit 1
-      ;;
-    \?)
-      printf 'E: illegal option -- %c\n' "$OPTARG" >&2
-      exit 1
-      ;;
+    v) verbose=1 ;;
+    :) printf 'E: option requires an argument -- %c\n' "$OPTARG" >&2; exit 1 ;;
+    \?) printf 'E: illegal option -- %c\n' "$OPTARG" >&2: exit 1 ;;
   esac
 done
 shift $((OPTIND - 1))
 
-if ! hash pulseaudio pactl grep cut 2> /dev/null; then
-  shift $#
-  for dependency in pulseaudio pactl grep cut; do
-    shift 1
-    command -v "$dependency" > /dev/null 2>&1 && continue 1
-    set -- "${1:+${1},}${dependency}"
-  done
-  test -n "$verbose" && printf 'E: missing dependencies [%s]' "$1" >&2
-  exit 1
-fi
-
-if ! pulseaudio --check; then
-  test -n "$verbose" && printf 'E: %s\n%s\n' >&2 \
-    'pulseaudio is not running, start it with `pulseaudio --start`'
-  exit 1
-fi
-
-set -e
+hash pulseaudio pactl 2> /dev/null || { printf "E: missing commands [pulseaudio, pactl]\n" >&2; exit 1; }
+pulseaudio --check || { printf 'E: pulseaudio is not running\n' >&2; exit 1; }
 
 info="$(pactl info)"
-default_sink="$(printf '%s\n' "$info"|grep '^Default Sink:'|cut -d' ' -f3)"
-default_source="$(printf '%s\n' "$info"|grep '^Default Source:'|cut -d' ' -f3)"
+default_sink="$(printf '%s\n' "$info" | sed -n 's/^Default[[:blank:]]\{1,\}Sink:[[:blank:]]\{1,\}\(.*\)$/\1/p')"
+default_source="$(printf '%s\n' "$info" | sed -n 's/^Default[[:blank:]]\{1,\}Source:[[:blank:]]\{1,\}\(.*\)$/\1/p')"
 
 case "$1" in
   sink)
