@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -e
-test -f "$HOME/.Xresources"
-hash xrdb 2> /dev/null
-exec xrdb -merge "$HOME/.Xresources"

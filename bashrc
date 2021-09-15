@@ -1,9 +1,11 @@
-test -z "$PS1" && return
+[[ -z "$PS1" ]] && return
 
 PS1='[$?][$PWD]$ '
 
-alias ls="ls --color=auto"
+alias ls="ls --color=auto -p"
 alias grep="grep --color=auto"
+
+alias rm="rm -i"
 
 alias ffmpeg="ffmpeg -hide_banner"
 alias ffprobe="ffprobe -hide_banner"
@@ -14,9 +16,9 @@ export LESSHISTFILE="/dev/null"
 export HISTFILE="/dev/null"
 
 if ! shopt -oq posix; then
-  if test -f /usr/share/bash-completion/bash_completion; then
+  if [[ -f /usr/share/bash-completion/bash_completion ]]; then
     . /usr/share/bash-completion/bash_completion
-  elif test -f /etc/bash_completion; then
+  elif [[ -f /etc/bash_completion ]]; then
     . /etc/bash_completion
   fi
 fi

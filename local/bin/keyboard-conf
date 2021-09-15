@@ -1,5 +1,0 @@
-#!/bin/sh
-
-set -e
-setxkbmap -layout us -option caps:escape # make CAPS lock act as ESC
-xset led on # turn keyboard led on

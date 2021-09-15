@@ -1,68 +1,47 @@
 runtime! debian.vim
 
-set viminfofile=NONE
-
 set nocompatible
-set autoread
+
 set backspace=indent,eol,start
 
-set ignorecase
-set smartcase
-set incsearch
-set wildmenu
-set hlsearch
-set showmatch
+let g:is_sh=1
+let g:sh_fold_enabled=3
 
-set number
-set relativenumber
-set scrolloff=5
-set ruler
+filetype indent plugin on
+
 set hidden
-set showmode
+set writebackup nobackup autoread
+set viminfofile=NONE
 
-set foldmethod=marker
-set foldcolumn=1
-
+syntax on
 set background=dark
 
-"set autoindent
-"set smartindent
-set smarttab
+set number relativenumber
+set ruler
+set scrolloff=5
+set showmode
+set showmatch
+
+set colorcolumn=80
+set foldmethod=syntax foldcolumn=1
+
 set expandtab
 set shiftwidth=2
-set tabstop=2
-"set nowrap
-"set textwidth=80
-"set wrapmargin=80
+set tabstop=2 softtabstop=2
 
-set nobackup
-set nowritebackup
-set noswapfile
+set wildmenu hlsearch incsearch
 
-"set laststatus=2
-"set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
+nnoremap <leader><Up> :resize +2<CR>
+nnoremap <leader><Down> :resize -2<CR>
+nnoremap <leader><Right> :vertical resize +2<CR>
+nnoremap <leader><Left> :vertical resize -2<CR>
 
-if has("autocmd")
-  filetype indent on
-  filetype plugin on
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
+function StripTrailingWhitespace()
+  if !&binary && &filetype != 'diff'
+    normal mz
+    %s/\s\+$//e
+    normal `z
+  endif
+endfunction
 
-if has("syntax")
-  syntax on
-endif
-
-let g:is_posix = 1
-
-"if &t_Co >= 16
-"  try | colorscheme solarized | catch | endtry
-"else
-"  try | colorscheme default | catch | endtry
-"endif
-
-func! DeleteTrailingWS()
-  exe "normal mz"
-  %s/[[:blank:]]\{1,\}$//ge
-  exe "normal `z"
-endfunc
-autocmd BufWrite * :call DeleteTrailingWS()
+autocmd BufWrite * :call StripTrailingWhitespace()
