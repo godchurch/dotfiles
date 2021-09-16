@@ -1,7 +1,4 @@
-runtime! debian.vim
-
 set nocompatible
-
 set backspace=indent,eol,start
 
 let g:is_sh=1
