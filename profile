@@ -2,16 +2,20 @@ if test -n "$PS1"; then
   if test -n "$BASH" && test "$BASH" != "/bin/sh"; then
     test -f "$HOME/.bashrc" && . "$HOME/.bashrc"
   else
-    test "$(id -u)" -eq 0 && PS1='# ' || PS1='$ '
+    test "`id -u`" -eq 0 && PS1='# ' || PS1='$ '
   fi
 fi
 
-if EDITOR="$(command -v vim)"; then
+export LESSHISTFILE='-'
+
+if EDITOR="`command -v vim`"; then
   export EDITOR
-elif EDITOR="$(command -v vi)"; then
+elif EDITOR="`command -v vi`"; then
   export EDITOR
-elif EDITOR="$(command -v nano)"; then
+elif EDITOR="`command -v nano`"; then
   export EDITOR
+else
+  unset EDITOR
 fi
 
 if test -d "$HOME/.local/bin"; then
@@ -30,4 +34,4 @@ if test -d "$HOME/bin"; then
   fi
 fi
 
-# vim: ft=sh
+# vim: filetype=sh
