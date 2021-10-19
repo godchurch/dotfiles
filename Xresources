@@ -9,5 +9,4 @@ URxvt.letterSpace:    -1
 xterm*faceName: Monospace:size=10
 XTerm*termName: xterm-256color
 
-rofi.history: false
-rofi.font:    Monospace 10
+*background: #000000

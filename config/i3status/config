@@ -4,28 +4,28 @@ order += "wireless _first_"
 order += "ethernet _first_"
 
 general {
-  color_good = "#FFFFFF"
-  color_degraded = "#FFEB3B"
-  color_bad = "#F44336"
-  interval = 30
+	color_good = "#FFFFFF"
+	color_degraded = "#FFEB3B"
+	color_bad = "#F44336"
+	interval = 30
 }
 
 volume master {
-  format = "%volume"
-  format_muted = "muted (%volume)"
-  device = "pulse"
+	format = "%volume"
+	ormat_muted = "muted (%volume)"
+	evice = "pulse"
 }
 
 tztime local {
-  format = "%H:%M %m/%d"
+	ormat = "%H:%M %m/%d"
 }
 
 wireless _first_ {
-  format_up = "WIFI (%quality at %essid) %ip"
-  format_down = "WIFI"
+	ormat_up = "WIFI (%quality at %essid) %ip"
+	ormat_down = "WIFI"
 }
 
 ethernet _first_ {
-  format_up = "ETH %ip"
-  format_down = "ETH"
+	ormat_up = "ETH %ip"
+	ormat_down = "ETH"
 }
