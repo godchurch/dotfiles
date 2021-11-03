@@ -1,10 +1,12 @@
 if test -n "$PS1"; then
 	if test -n "$BASH" && test "$BASH" != "/bin/sh"; then
-		test -f "$HOME/.bashrc" && . "$HOME/.bashrc"
+		test -r "$HOME/.bashrc" && . "$HOME/.bashrc"
 	else
 		test `id -u` -eq 0 && PS1="# " || PS1="$ "
 	fi
 fi
+
+export LESSHISTFILE='-'
 
 if command -v vim > /dev/null; then
 	export EDITOR="vim" MANPAGER="vim -M +MANPAGER -"
@@ -32,4 +34,4 @@ if test -d "$HOME/bin"; then
 	fi
 fi
 
-# vim: filetype=sh
+# vim: filetype=sh syntax=sh
