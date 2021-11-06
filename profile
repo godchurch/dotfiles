@@ -2,7 +2,7 @@ if test -n "$PS1"; then
 	if test -n "$BASH" && test "$BASH" != "/bin/sh"; then
 		test -r "$HOME/.bashrc" && . "$HOME/.bashrc"
 	else
-		test `id -u` -eq 0 && PS1="# " || PS1="$ "
+		test $(id -u) -eq 0 && PS1="# " || PS1="$ "
 	fi
 fi
 
@@ -16,22 +16,6 @@ elif command -v nano > /dev/null; then
 	export EDITOR="nano"
 else
 	unset EDITOR
-fi
-
-if test -d "$HOME/.local/bin"; then
-	if test -n "${PATH%%$HOME/.local/bin*}"; then
-		if test -n "${PATH%%*:$HOME/.local/bin*}"; then
-			PATH="$HOME/.local/bin${PATH:+:$PATH}"
-		fi
-	fi
-fi
-
-if test -d "$HOME/bin"; then
-	if test -n "${PATH%%$HOME/bin*}"; then
-		if test -n "${PATH%%*:$HOME/bin*}"; then
-			PATH="$HOME/bin${PATH:+:$PATH}"
-		fi
-	fi
 fi
 
 # vim: filetype=sh syntax=sh

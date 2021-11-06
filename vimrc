@@ -3,8 +3,10 @@ runtime! ftplugin/man.vim
 set nocompatible
 set backspace=indent,eol,start
 
-let g:is_sh=1
-let g:sh_fold_enabled=3
+let g:is_posix = 1
+"let g:is_bash=1
+"let g:is_sh=1
+let g:sh_fold_enabled = 3
 
 filetype indent plugin on
 
@@ -23,8 +25,10 @@ set scrolloff=5
 set showmode
 set showmatch
 
-set colorcolumn=80
-set foldmethod=syntax foldcolumn=1
+set foldmethod=marker foldcolumn=1
+
+autocmd FileType sh,bash,zsh setlocal foldmethod=syntax foldcolumn=1 colorcolumn=101
+autocmd FileType man setlocal nonumber norelativenumber foldcolumn=0
 
 set shiftwidth=4
 set tabstop=4 softtabstop=4
@@ -35,15 +39,6 @@ nnoremap <leader><Up> :resize +2<CR>
 nnoremap <leader><Down> :resize -2<CR>
 nnoremap <leader><Right> :vertical resize +2<CR>
 nnoremap <leader><Left> :vertical resize -2<CR>
-
-augroup ManPager
-	autocmd!
-	autocmd FileType man
-		\ setlocal nonumber |
-		\ setlocal norelativenumber |
-		\ setlocal colorcolumn=0 |
-		\ setlocal foldcolumn=0
-augroup end
 
 function StripTrailingWhitespace()
 	if !&binary && &filetype != 'diff'
