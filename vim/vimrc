@@ -21,7 +21,10 @@ set lazyredraw
 set number relativenumber
 set ruler
 set showcmd
-set scrolloff=5
+"set scrolloff=5
+set nowrap
+set sidescrolloff=999
+set scrolloff=999
 set showmode
 set showmatch
 
@@ -49,3 +52,13 @@ function StripTrailingWhitespace()
 endfunction
 
 autocmd BufWrite * :call StripTrailingWhitespace()
+
+hi! ColorColumn  ctermfg=NONE ctermbg=8    cterm=NONE
+hi! Comment      ctermfg=8    ctermbg=NONE cterm=NONE
+hi! Folded       ctermfg=NONE ctermbg=NONE cterm=NONE
+hi! FoldColumn   ctermfg=NONE ctermbg=NONE cterm=NONE
+hi! LineNr       ctermfg=NONE ctermbg=NONE cterm=NONE
+hi! Function     ctermfg=NONE ctermbg=NONE cterm=NONE
+hi! String       ctermfg=1    ctermbg=NONE cterm=NONE
+
+autocmd FileType sh,bash,zsh colorscheme custom_shell
