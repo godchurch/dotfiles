@@ -33,6 +33,8 @@ set foldmethod=marker foldcolumn=1
 autocmd FileType sh,bash,zsh setlocal foldmethod=syntax foldcolumn=1 colorcolumn=101
 autocmd FileType man setlocal nonumber norelativenumber foldcolumn=0
 
+set dictionary=/usr/share/dict/words
+
 set shiftwidth=4
 set tabstop=4 softtabstop=4
 
