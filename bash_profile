@@ -98,7 +98,6 @@ ConfigureShell ()
 	alias cp="cp -i"
 	alias sudo="sudo -E "
 	alias date="date '+%n  YEAR: %Y%n MONTH: %m (%B)%n   DAY: %d (%A)%n  TIME: %r%n'"
-	alias music='mpv --no-audio-display --shuffle'
 
 	ConfigurePrompt; unset -f ConfigurePrompt
 
