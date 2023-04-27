@@ -63,4 +63,4 @@ hi! LineNr       ctermfg=NONE ctermbg=NONE cterm=NONE
 hi! Function     ctermfg=NONE ctermbg=NONE cterm=NONE
 hi! String       ctermfg=1    ctermbg=NONE cterm=NONE
 
-autocmd FileType sh,bash,zsh colorscheme custom_shell
+"autocmd FileType sh,bash,zsh colorscheme CustomShell

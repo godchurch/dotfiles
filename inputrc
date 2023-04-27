@@ -4,5 +4,6 @@ set colored-completion-prefix On
 set expand-tilde On
 
 "\e[Z": menu-complete
+"\e\C-n": "virsh --connect qemu:///system start live-cd && virt-manager --connect qemu:///system --show-domain-console live-cd"
 
-$include ~/.config/inputrc.local
+# vim: filetype=readline
