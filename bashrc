@@ -1,14 +1,9 @@
-case "$-" in (*i*) ;; (*) return ;; esac
+[[ $- != *i* ]] && return 0
 
 unset HISTFILE
 
-if ! shopt -oq posix; then
-	if [[ -f /usr/share/bash-completion/bash_completion ]]; then
-		source /usr/share/bash-completion/bash_completion
-	elif [[ -f /etc/bash_completion ]]; then
-		source /etc/bash_completion
-	fi
-fi
+[[ -f /usr/share/bash-completion/bash_completion ]] \
+	&& source /usr/share/bash-completion/bash_completion
 
 \unalias -a
 IFS=$' \t\n'
@@ -34,14 +29,15 @@ if [[ $PROMPT_COLOR == "yes" ]]; then
 	alias ll="ls -Al --color=auto"
 	alias grep="grep --color=auto"
 else
-	alias la="ls -AF"
-	alias ll="ls -AlF"
+	alias la="ls -A -F"
+	alias ll="ls -Al -F"
 fi
 
+alias sudo="sudo "
 alias mv="mv -i"
 alias rm="rm -i"
 alias cp="cp -i"
-alias dt="printf '%(%n  YEAR: %Y%n MONTH: %m (%B)%n   DAY: %d (%A)%n  TIME: %r%n%n)T'"
+alias dt="date '+%n  YEAR: %Y%n MONTH: %m (%B)%n   DAY: %d (%A)%n  TIME: %r%n'"
 
 if [[ $PROMPT_COLOR == "yes" ]]; then
 	PROMPT_ERROR='\e[1;38;5;161mERROR: %d\e[0m\n'
