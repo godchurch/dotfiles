@@ -1,22 +1,20 @@
 [[ $- != *i* ]] && return 0
 
-unset HISTFILE
-
 [[ -f /usr/share/bash-completion/bash_completion ]] \
 	&& source /usr/share/bash-completion/bash_completion
+
+umask 0022
 
 \unalias -a
 IFS=$' \t\n'
 
-if [[ -x /usr/bin/vim ]]; then
-	export EDITOR="/usr/bin/vim" MANPAGER="/usr/bin/vim --not-a-term -M +MANPAGER -"
-elif [[ -x /usr/bin/vi ]]; then
-	export EDITOR="/usr/bin/vi"
-elif [[ -x /usr/bin/nano ]]; then
-	export EDITOR="/usr/bin/nano"
+if type nvim &> /dev/null; then
+	export EDITOR="nvim" MANPAGER="nvim +Man!"
+elif type vim &> /dev/null; then
+	export EDITOR="vim" MANPAGER="vim --not-a-term -M +MANPAGER -"
+elif type vi &> /dev/null; then
+	export EDITOR="vi"
 fi
-
-export LESSHISTFILE=/dev/null
 
 [[ $TERM =~ ^xterm|^rxvt|^tmux ]] && [[ -x /usr/bin/tty ]] && printf '\e]2;%d:%s\e\\' "$$" "$(/usr/bin/tty)"
 [[ $TERM =~ ^xterm-color|-256color$ ]] && PROMPT_COLOR="yes"
