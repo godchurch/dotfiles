@@ -1,3 +1,5 @@
+#!/bin/bash
+
 [[ $- != *i* ]] && return 0
 
 [[ -f /usr/share/bash-completion/bash_completion ]] && source /usr/share/bash-completion/bash_completion
@@ -76,5 +78,3 @@ unset USE_COLOR PROMPT_ERROR
 unset PROMPT_COLOR_RESET PROMPT_COLOR_STANDARD PROMPT_COLOR_DIRECTORY PROMPT_COLOR_ERROR
 
 PROMPT_DIRTRIM=3
-
-# vim: filetype=sh syntax=bash

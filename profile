@@ -1,3 +1,5 @@
+#!/bin/sh
+
 export HISTFILE=/dev/null
 export LESSHISTFILE=/dev/null
 
@@ -6,5 +8,3 @@ if [ -n "$BASH_VERSION" ]; then
 		. ~/.bashrc
 	fi
 fi
-
-# vim: filetype=sh syntax=sh
