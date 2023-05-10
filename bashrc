@@ -1,17 +1,18 @@
-#!/bin/bash
+[[ $- != *i* ]] && return
 
-[[ $- != *i* ]] && return 0
+\unalias -a
+umask 0022
+unset HISTFILE
+
+IFS=$' \t\n'
 
 [[ -f /usr/share/bash-completion/bash_completion ]] && source /usr/share/bash-completion/bash_completion
 [[ -f /usr/lib/git-core/git-sh-prompt ]] && type git &> /dev/null && source /usr/lib/git-core/git-sh-prompt
 
-umask 0022
-
-\unalias -a
-IFS=$' \t\n'
-
 SetupShell()
 {
+	[[ $TERM =~ ^xterm|^rxvt|^tmux ]] && echo -en "\033]2;PID: $$\007"
+
 	if type nvim &> /dev/null; then
 		export EDITOR="nvim" MANPAGER="nvim +Man!"
 	elif type vim &> /dev/null; then
@@ -20,8 +21,8 @@ SetupShell()
 		export EDITOR="vi"
 	fi
 
-	[[ $TERM =~ ^xterm-color|-256color$ ]] && local USE_COLOR="yes" || local USE_COLOR="no"
-	[[ $TERM =~ ^xterm|^rxvt|^tmux ]] && echo -en "\033]2;PID: $$\007"
+	# assume 256 color support, unless in tty
+	[[ $TERM == 'linux' ]] && local USE_COLOR="no" || local USE_COLOR="yes"
 
 	if [[ $USE_COLOR == 'yes' ]]; then
 		export GREP_COLORS='ms=01;33:mc=01;31:sl=:cx=:fn=35:ln=32:bn=32:se=36'
