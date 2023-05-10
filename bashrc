@@ -40,42 +40,38 @@ SetupShell()
 	alias dt="date '+%n  YEAR: %Y%n MONTH: %m (%B)%n   DAY: %d (%A)%n  TIME: %r%n'"
 
 	if (($use_color)); then
-		local PROMPT_COLOR_RESET='\001\033[0m\002'
-		local PROMPT_COLOR_STANDARD='\001\033[0m\033[1;38;5;249m\002'
-		local PROMPT_COLOR_DIRECTORY='\001\033[0m\033[1;38;5;38m\002'
-		local PROMPT_COLOR_ERROR='\001\033[0m\033[1;38;5;161m\002'
+		local prompt_reset=$'\001\033[0m\002'
+		local prompt_normal=$'\001\033[0m\033[1;38;5;255m\002'
+		local prompt_folder=$'\001\033[0m\033[1;38;5;38m\002'
+		local error_color=$'\033[0m\033[1;38;5;161m'
+		local error_reset=$'\033[0m'
 	else
-		local PROMPT_COLOR_RESET=
-		local PROMPT_COLOR_STANDARD=
-		local PROMPT_COLOR_DIRECTORY=
-		local PROMPT_COLOR_ERROR=
+		local prompt_reset=''
+		local prompt_normal=''
+		local prompt_folder=''
+		local error_color=''
+		local error_reset=''
 	fi
 
-	local PROMPT_ERROR
-	printf -v PROMPT_ERROR 'case $? in (0) ;; (*) echo "%bERROR: $?%b" ;; esac' \
-		"$PROMPT_COLOR_ERROR" "$PROMPT_COLOR_RESET"
+	PROMPT_COMMAND=("case \$? in (0) ;; (*) echo \"${error_color}ERROR: \$?${error_reset}\" ;; esac")
 
-	if type __git_ps1 &> /dev/null; then
-		GIT_PS1_SHOWUPSTREAM="auto"
-		GIT_PS1_SHOWDIRTYSTATE=1
-		GIT_PS1_SHOWSTASHSTATE=1
-		GIT_PS1_SHOWUNTRACKEDFILES=1
+	local prompt_start="${prompt_normal}>${prompt_reset} ${prompt_folder}\\w${prompt_reset}"
+	local prompt_end="${prompt_normal}\\\$${prompt_reset}"
 
-		(($use_color)) && GIT_PS1_SHOWCOLORHINTS=1
+	PS1="${prompt_start} ${prompt_end} " PROMPT_DIRTRIM=4
 
-		printf -v PROMPT_COMMAND '__git_ps1 '\''%b>%b %b\\w%b '\'' '\''%b\\$%b '\''  '\''%b(%b%%s%b)%b '\' \
-			"$PROMPT_COLOR_STANDARD" "$PROMPT_COLOR_RESET" "$PROMPT_COLOR_DIRECTORY" "$PROMPT_COLOR_RESET" \
-			"$PROMPT_COLOR_STANDARD" "$PROMPT_COLOR_RESET" \
-			"$PROMPT_COLOR_STANDARD" "$PROMPT_COLOR_RESET" "$PROMPT_COLOR_STANDARD" "$PROMPT_COLOR_RESET"
+	type __git_ps1 &> /dev/null || return 0
 
-		PROMPT_COMMAND=("$PROMPT_ERROR" "$PROMPT_COMMAND")
-	else
-		printf -v PS1 '> \\w \\$ '
+	(($use_color)) && GIT_PS1_SHOWCOLORHINTS=1
 
-		PROMPT_COMMAND=("$PROMPT_ERROR")
-	fi
+	GIT_PS1_SHOWSTASHSTATE=1
+	GIT_PS1_SHOWDIRTYSTATE=1
+	GIT_PS1_SHOWUNTRACKEDFILES=1
+	GIT_PS1_SHOWUPSTREAM="auto"
 
-	PROMPT_DIRTRIM=3
+	(($use_color)) && local prompt_git="%s" || local prompt_git="(%s)"
+
+	PROMPT_COMMAND+=("__git_ps1 '$prompt_start ' '$prompt_end '  '$prompt_git '")
 }
 
 SetupShell; unset -f SetupShell
