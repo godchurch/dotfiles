@@ -6,8 +6,8 @@ unset HISTFILE
 
 IFS=$' \t\n'
 
-[[ -f /usr/share/bash-completion/bash_completion ]] && source /usr/share/bash-completion/bash_completion
-[[ -f /usr/lib/git-core/git-sh-prompt ]] && type git &> /dev/null && source /usr/lib/git-core/git-sh-prompt
+[[ -f /usr/share/bash-completion/bash_completion ]] && \
+	. /usr/share/bash-completion/bash_completion
 
 SetupShell()
 {
@@ -21,7 +21,6 @@ SetupShell()
 		export EDITOR="vi"
 	fi
 
-	# assume 256 color support, unless in tty
 	[[ $TERM == 'linux' ]] && local use_color=0 || local use_color=1
 
 	if (($use_color)); then
@@ -60,13 +59,13 @@ SetupShell()
 
 	PS1="${prompt_start} ${prompt_end} " PROMPT_DIRTRIM=4
 
-	type __git_ps1 &> /dev/null || return 0
+	type git __git_ps1 &> /dev/null || return 0
 
-	(($use_color)) && GIT_PS1_SHOWCOLORHINTS=1
+	(($use_color)) && GIT_PS1_SHOWCOLORHINTS="true"
 
-	GIT_PS1_SHOWSTASHSTATE=1
-	GIT_PS1_SHOWDIRTYSTATE=1
-	GIT_PS1_SHOWUNTRACKEDFILES=1
+	GIT_PS1_SHOWUNTRACKEDFILES="true"
+	GIT_PS1_SHOWSTASHSTATE="true"
+	GIT_PS1_SHOWDIRTYSTATE="true"
 	GIT_PS1_SHOWUPSTREAM="auto"
 
 	(($use_color)) && local prompt_git="%s" || local prompt_git="(%s)"
