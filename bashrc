@@ -1,3 +1,5 @@
+#!/bin/bash
+
 [[ $- != *i* ]] && return
 
 \unalias -a
@@ -6,71 +8,66 @@ unset HISTFILE
 
 IFS=$' \t\n'
 
-[[ -f /usr/share/bash-completion/bash_completion ]] && \
-	. /usr/share/bash-completion/bash_completion
+[[ $TERM == @(xterm*|rxvt*|tmux*) ]] && printf "\e]2;PID: %d\a" "$$"
 
-SetupShell()
+if command -v nvim > /dev/null; then
+    export EDITOR="nvim" MANPAGER="nvim +Man!"
+elif command -v vim > /dev/null; then
+    export EDITOR="vim" MANPAGER="vim --not-a-term -M +MANPAGER -"
+elif command -v vi > /dev/null; then
+    export EDITOR="vi"
+fi
+
+if [[ $TERM != "linux" ]]; then
+    alias la="ls -A --color=auto"
+    alias ll="ls -Al --color=auto"
+    alias grep="grep --color=auto"
+else
+    alias la="ls -A -F"
+    alias ll="ls -Al -F"
+fi
+
+alias sudo="sudo "
+alias mv="mv -i"
+alias rm="rm -i"
+alias cp="cp -i"
+
+if command -v git > /dev/null; then
+    PROMPT_COMMAND=('__bash_ps1 "$?" "$(git symbolic-ref --short HEAD 2> /dev/null)"')
+else
+    PROMPT_COMMAND=('__bash_ps1 "$? ""')
+fi
+
+__bash_ps1 ()
 {
-	[[ $TERM =~ ^xterm|^rxvt|^tmux ]] && echo -en "\033]2;PID: $$\007"
+    local open="[ " close=" ]" end="\[\e[36m\]"
 
-	if type nvim &> /dev/null; then
-		export EDITOR="nvim" MANPAGER="nvim +Man!"
-	elif type vim &> /dev/null; then
-		export EDITOR="vim" MANPAGER="vim --not-a-term -M +MANPAGER -"
-	elif type vi &> /dev/null; then
-		export EDITOR="vi"
-	fi
+    case "$1" in
+        (0) local begin="\[\e[1;32m\]" reset="\[\e[32m\]" code=""    ;;
+        (*) local begin="\[\e[1;31m\]" reset="\[\e[31m\]" code="$1 " ;;
+    esac
 
-	[[ $TERM == 'linux' ]] && local use_color=0 || local use_color=1
+    case "${#2}" in
+        (0) local git=             branch=     branch_short=            sep=    ;;
+        (*) local git="\[\e[33m\]" branch="$2" branch_short="${2:0:20}" sep=" " ;;
+    esac
 
-	if (($use_color)); then
-		alias la="ls -A --color=auto"
-		alias ll="ls -Al --color=auto"
-		alias grep="grep --color=auto"
-	else
-		alias la="ls -A -F"
-		alias ll="ls -Al -F"
-	fi
+    [ "${#branch}" -gt "${#branch_short}" ] && branch="${branch_short}..."
 
-	alias sudo="sudo "
-	alias mv="mv -i"
-	alias rm="rm -i"
-	alias cp="cp -i"
-	alias dt="date '+%n  YEAR: %Y%n MONTH: %m (%B)%n   DAY: %d (%A)%n  TIME: %r%n'"
+    case "$PWD" in
+        (~)   local cwd="~"         ;;
+        (~/*) local cwd="~${PWD#~}" ;;
+        (*)   local cwd="$PWD"      ;;
+    esac
 
-	if (($use_color)); then
-		local prompt_reset=$'\001\033[0m\002'
-		local prompt_normal=$'\001\033[0m\033[1;38;5;255m\002'
-		local prompt_folder=$'\001\033[0m\033[1;38;5;38m\002'
-		local error_color=$'\033[0m\033[1;38;5;161m'
-		local error_reset=$'\033[0m'
-	else
-		local prompt_reset=''
-		local prompt_normal=''
-		local prompt_folder=''
-		local error_color=''
-		local error_reset=''
-	fi
+    until [ "$((${#open} + ${#code} + ${#cwd} + ${#sep} + ${#branch} + ${#close}))" -lt 60 ]; do
+        case "$cwd" in
+            (.../*/*) cwd=".../${cwd#.../*/}" ;;
+               (/*/*) cwd=".../${cwd#/*/}" ;;
+                  (*) break 1 ;;
+        esac
+    done
 
-	PROMPT_COMMAND=("case \$? in (0) ;; (*) echo \"${error_color}ERROR: \$?${error_reset}\" ;; esac")
-
-	local prompt_start="${prompt_normal}>${prompt_reset} ${prompt_folder}\\w${prompt_reset}"
-	local prompt_end="${prompt_normal}\\\$${prompt_reset}"
-
-	PS1="${prompt_start} ${prompt_end} " PROMPT_DIRTRIM=4
-
-	type git __git_ps1 &> /dev/null || return 0
-
-	(($use_color)) && GIT_PS1_SHOWCOLORHINTS="true"
-
-	GIT_PS1_SHOWUNTRACKEDFILES="true"
-	GIT_PS1_SHOWSTASHSTATE="true"
-	GIT_PS1_SHOWDIRTYSTATE="true"
-	GIT_PS1_SHOWUPSTREAM="auto"
-
-	(($use_color)) && local prompt_git="%s" || local prompt_git="(%s)"
-
-	PROMPT_COMMAND+=("__git_ps1 '$prompt_start ' '$prompt_end '  '$prompt_git '")
+    PS0="\[\e[0m\]"
+    PS1="${begin}${open}${code}${cwd}${branch:+${sep}${git}${branch}${reset}}${close} ${end}"
 }
-
-SetupShell; unset -f SetupShell
