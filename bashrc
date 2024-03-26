@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ $- != *i* ]] && return
+[[ "$-" != *i* ]] && return
 
 \unalias -a
 umask 0022
@@ -8,7 +8,7 @@ unset HISTFILE
 
 IFS=$' \t\n'
 
-[[ $TERM == @(xterm*|rxvt*|tmux*) ]] && printf "\e]2;PID: %d\a" "$$"
+[[ "$TERM" == @(xterm*|rxvt*|tmux*) ]] && printf "\e]2;PID: %d\a" "$$"
 
 if command -v nvim > /dev/null; then
     export EDITOR="nvim" MANPAGER="nvim +Man!"
@@ -23,13 +23,13 @@ alias cp="cp -i"
 alias mv="mv -i"
 alias rm="rm -i"
 
-if [[ $TERM != linux ]]; then
-    alias l="ls -lh --color=auto"
-    alias ll="ls -Alh --color=auto"
+if [[ "$TERM" != linux ]]; then
+    alias ll="ls -lh --color=auto"
+    alias la="ls -Alh --color=auto"
     alias grp="grep --color=auto"
 else
-    alias l="ls -lhF"
-    alias ll="ls -AlhF"
+    alias ll="ls -lhF"
+    alias la="ls -AlhF"
     alias grp="grep"
 fi
 
@@ -40,9 +40,9 @@ fi
 
 __bash_ps1 ()
 {
-    if (( "$1" > 0 ))
-    then declare -- BEGIN="\e[1;31m" RESET="\e[31m" END="\e[36m" CODE="$1 "
-    else declare -- BEGIN="\e[1;32m" RESET="\e[32m" END="\e[36m" CODE=
+    if (( "$1" == 0 ))
+    then declare -- BEGIN="\e[1;32m" RESET="\e[32m" END="\e[36m" CODE=
+    else declare -- BEGIN="\e[1;31m" RESET="\e[31m" END="\e[36m" CODE="$1 "
     fi
 
     if [[ -n "$2" ]]
@@ -63,3 +63,6 @@ __bash_ps1 ()
 }
 
 PS0="\[\e[0m\]"
+
+alias youtube="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"
+alias tiktok="yt-dlp -o '%(id)s.%(ext)s'"
