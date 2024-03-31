@@ -40,7 +40,7 @@ fi
 
 __bash_ps1 ()
 {
-    if (( "$1" == 0 ))
+    if [[ "$1" -eq 0 ]]
     then declare -- BEGIN="\e[1;32m" RESET="\e[32m" END="\e[36m" CODE=
     else declare -- BEGIN="\e[1;31m" RESET="\e[31m" END="\e[36m" CODE="$1 "
     fi
@@ -50,12 +50,12 @@ __bash_ps1 ()
     else declare -- GIT="\e[33m" BRANCH=     SHORT=
     fi
 
-    (( ${#BRANCH} > ${#SHORT} )) && BRANCH="${SHORT}..."
+    [[ ${#BRANCH} -gt ${#SHORT} ]] && BRANCH="${SHORT}..."
 
     PS1="[ ${CODE}\w${BRANCH:+ ${BRANCH}} ] "
 
     unset PROMPT_DIRTRIM; declare -- EXPANDED="${PS1@P}"
-    until (( ${#EXPANDED} < 60 )); do
+    until [[ ${#EXPANDED} -lt 60 ]]; do
         PROMPT_DIRTRIM=$((${PROMPT_DIRTRIM:-7} - 1)); EXPANDED="${PS1@P}"
     done
 
