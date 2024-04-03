@@ -23,14 +23,13 @@ alias cp="cp -i"
 alias mv="mv -i"
 alias rm="rm -i"
 
-if [[ "$TERM" != linux ]]; then
-    alias ll="ls -lh --color=auto"
-    alias la="ls -Alh --color=auto"
-    alias grp="grep --color=auto"
-else
-    alias ll="ls -lhF"
-    alias la="ls -AlhF"
-    alias grp="grep"
+alias ll="ls -l --color=auto --human-readable"
+alias la="ls -lA --color=auto --human-readable"
+alias grp="grep --color=auto"
+
+if command -v yt-dlp > /dev/null; then
+    alias youtube="yt-dlp --format 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"
+    alias tiktok="yt-dlp --output '%(id)s.%(ext)s'"
 fi
 
 if command -v git > /dev/null
@@ -63,6 +62,3 @@ __bash_ps1 ()
 }
 
 PS0="\[\e[0m\]"
-
-alias youtube="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"
-alias tiktok="yt-dlp -o '%(id)s.%(ext)s'"
