@@ -28,7 +28,7 @@ alias la="ls -lA --color=auto --human-readable"
 alias grp="grep --color=auto"
 
 if command -v yt-dlp > /dev/null; then
-    alias youtube="yt-dlp --format 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"
+    alias youtube="yt-dlp --embed-chapters --format 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"
     alias tiktok="yt-dlp --output '%(id)s.%(ext)s'"
 fi
 
