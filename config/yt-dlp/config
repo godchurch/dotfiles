@@ -1,2 +1,7 @@
 # Restrict filenames to only ASCII characters, and avoid "&" and spaces in filenames
 --restrict-filenames
+
+# Aliases
+--alias download-music,-M "-f251 -x"
+--alias download-youtube,-Y "-N 4 --embed-chapters --format 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"
+--alias download-tiktok,-T "--output '%(id)s.%(ext)s'"

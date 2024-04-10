@@ -27,11 +27,6 @@ alias ll="ls -l --color=auto --human-readable"
 alias la="ls -lA --color=auto --human-readable"
 alias grp="grep --color=auto"
 
-if command -v yt-dlp > /dev/null; then
-    alias youtube="yt-dlp --embed-chapters --format 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'"
-    alias tiktok="yt-dlp --output '%(id)s.%(ext)s'"
-fi
-
 if command -v git > /dev/null
 then PROMPT_COMMAND=('__bash_ps1 "$?" "$(git symbolic-ref --short HEAD 2> /dev/null)"')
 else PROMPT_COMMAND=('__bash_ps1 "$?" ""')
