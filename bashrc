@@ -49,7 +49,7 @@ __bash_ps1 ()
     PS1="[ ${CODE}\w${BRANCH:+ ${BRANCH}} ] "
 
     unset PROMPT_DIRTRIM; declare -- EXPANDED="${PS1@P}"
-    until [[ ${#EXPANDED} -lt 60 ]]; do
+    until [[ ${#EXPANDED} -lt 40 ]]; do
         PROMPT_DIRTRIM=$((${PROMPT_DIRTRIM:-7} - 1)); EXPANDED="${PS1@P}"
     done
 
