@@ -54,6 +54,7 @@ __bash_ps1 ()
     done
 
     PS1="\[$BEGIN\][ $CODE\w${BRANCH:+ \[$GIT\]${BRANCH}\[$RESET\]} ] \[$END\]"
+    PS2="\[$BEGIN\]  -> \[$END\]"
 }
 
 PS0="\[\e[0m\]"
