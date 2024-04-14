@@ -35,26 +35,26 @@ fi
 __bash_ps1 ()
 {
     if [[ "$1" -eq 0 ]]
-    then declare -- BEGIN="\e[0;32m" RESET="\e[32m" END="\e[35m" CODE=
-    else declare -- BEGIN="\e[0;31m" RESET="\e[31m" END="\e[35m" CODE="$1 "
+    then declare -- BEGIN="\[\e[32m\]" END="\[\e[35m\]" EXPANDED="" CODE=""
+    else declare -- BEGIN="\[\e[31m\]" END="\[\e[35m\]" EXPANDED="" CODE="$1 "
     fi
 
-    if [[ -n "$2" ]]
-    then declare -- GIT="\e[33m" BRANCH="$2" SHORT="${2:0:20}"
-    else declare -- GIT="\e[33m" BRANCH=     SHORT=
+    if [[ ${#2} -eq 0 ]]; then
+        declare -- GIT="" RESET="" BRANCH=""
+    else
+        if [[ ${#2} -lt 20 ]]
+        then declare -- GIT="\[\e[33m\]" RESET="$BEGIN" BRANCH=" $2"
+        else declare -- GIT="\[\e[33m\]" RESET="$BEGIN" BRANCH=" ${2:0:15}..."
+        fi
     fi
 
-    [[ ${#BRANCH} -gt ${#SHORT} ]] && BRANCH="${SHORT}..."
-
-    PS1="[ ${CODE}\w${BRANCH:+ ${BRANCH}} ] "
-
-    unset PROMPT_DIRTRIM; declare -- EXPANDED="${PS1@P}"
-    until [[ ${#EXPANDED} -lt 40 ]]; do
-        PROMPT_DIRTRIM=$((${PROMPT_DIRTRIM:-7} - 1)); EXPANDED="${PS1@P}"
+    unset PROMPT_DIRTRIM; PS1="\w"
+    until EXPANDED="${PS1@P}" && [[ ${#EXPANDED} -lt 40 ]]; do
+        PROMPT_DIRTRIM=$((${PROMPT_DIRTRIM:-7} - 1))
     done
 
-    PS1="\[$BEGIN\][ $CODE\w${BRANCH:+ \[$GIT\]${BRANCH}\[$RESET\]} ] \[$END\]"
-    PS2="\[$BEGIN\]  -> \[$END\]"
+    PS1="\[\e[0m\]${BEGIN}[ ${CODE}${PS1}${GIT}${BRANCH}${RESET} ] ${END}"
+    PS2="\[\e[0m\]${BEGIN}  -> ${END}"
 }
 
 PS0="\[\e[0m\]"
