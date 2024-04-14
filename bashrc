@@ -35,8 +35,8 @@ fi
 __bash_ps1 ()
 {
     if [[ "$1" -eq 0 ]]
-    then declare -- BEGIN="\e[1;32m" RESET="\e[32m" END="\e[36m" CODE=
-    else declare -- BEGIN="\e[1;31m" RESET="\e[31m" END="\e[36m" CODE="$1 "
+    then declare -- BEGIN="\e[0;32m" RESET="\e[32m" END="\e[35m" CODE=
+    else declare -- BEGIN="\e[0;31m" RESET="\e[31m" END="\e[35m" CODE="$1 "
     fi
 
     if [[ -n "$2" ]]
