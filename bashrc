@@ -34,27 +34,26 @@ fi
 
 __bash_ps1 ()
 {
-    if [[ "$1" -eq 0 ]]
-    then declare -- BEGIN="\[\e[32m\]" END="\[\e[35m\]" EXPANDED="" CODE=""
-    else declare -- BEGIN="\[\e[31m\]" END="\[\e[35m\]" EXPANDED="" CODE="$1 "
-    fi
+    [[ "${PS1_CONFIG_LINES:-2}" -lt 2 ]] &&
+        declare -- PS1_SYMBOL=$'\uE285' PS1_EXPANDED= PS1_SEPARATOR=" " ||
+        declare -- PS1_SYMBOL=$'\uE285' PS1_EXPANDED= PS1_SEPARATOR=$'\n'
 
-    if [[ ${#2} -eq 0 ]]; then
-        declare -- GIT="" RESET="" BRANCH=""
-    else
-        if [[ ${#2} -lt 20 ]]
-        then declare -- GIT="\[\e[33m\]" RESET="$BEGIN" BRANCH=" $2"
-        else declare -- GIT="\[\e[33m\]" RESET="$BEGIN" BRANCH=" ${2:0:15}..."
-        fi
+    [[ "$1" -eq 0 ]] &&
+        declare -- PS1_PWD="\[\e[32m\]\w\[\e[0m\]" PS1_CODE="" ||
+        declare -- PS1_PWD="\[\e[31m\]\w\[\e[0m\]" PS1_CODE="\[\e[33m\]$1\[\e[0m\] "
+
+    if [[ -n "$2" ]]; then
+        [[ ${#2} -le 20 ]] &&
+            declare -- PS1_BRANCH=" \[\e[33m\]$2\[\e[0m\]" ||
+            declare -- PS1_BRANCH=" \[\e[33m\]${2:0:17}...\[\e[0m\]"
     fi
 
     unset PROMPT_DIRTRIM; PS1="\w"
-    until EXPANDED="${PS1@P}" && [[ ${#EXPANDED} -lt 40 ]]; do
-        PROMPT_DIRTRIM=$((${PROMPT_DIRTRIM:-7} - 1))
+    until PS1_EXPANDED="${PS1@P}" && [[ ${#PS1_EXPANDED} -le 60 ]]; do
+        [[ ${PROMPT_DIRTRIM:=7} -eq 1 ]] && break 1
+        PROMPT_DIRTRIM=$((PROMPT_DIRTRIM - 1))
     done
 
-    PS1="\[\e[0m\]${BEGIN}[ ${CODE}${PS1}${GIT}${BRANCH}${RESET} ] ${END}"
-    PS2="\[\e[0m\]${BEGIN}  -> ${END}"
+    PS2="\[\e[35m\]$PS1_SYMBOL\[\e[0m\] "
+    PS1="\[\e[0m\]${PS1_CODE}${PS1_PWD}${PS1_BRANCH}${PS1_SEPARATOR}${PS2}"
 }
-
-PS0="\[\e[0m\]"
