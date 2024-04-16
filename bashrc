@@ -34,7 +34,7 @@ fi
 
 __bash_ps1 ()
 {
-    [[ "${PS1_CONFIG_LINES:-2}" -lt 2 ]] &&
+    [[ "${PS1_CONFIG_LINES:-2}" -eq 1 ]] &&
         declare -- PS1_SYMBOL=$'\uE285' PS1_EXPANDED= PS1_SEPARATOR=" " ||
         declare -- PS1_SYMBOL=$'\uE285' PS1_EXPANDED= PS1_SEPARATOR=$'\n'
 
