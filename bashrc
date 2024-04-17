@@ -27,32 +27,52 @@ alias ll="ls -l --color=auto --human-readable"
 alias la="ls -lA --color=auto --human-readable"
 alias grp="grep --color=auto"
 
-command -v git > /dev/null \
-    && PROMPT_COMMAND=('__bash_ps1 "$?" "$(git symbolic-ref --short HEAD 2> /dev/null)"') \
-    || PROMPT_COMMAND=('__bash_ps1 "$?" ""')
+if command -v git > /dev/null
+then PROMPT_COMMAND=('__bash_ps1 "$?" "$(git symbolic-ref --short HEAD 2> /dev/null)"')
+else PROMPT_COMMAND=('__bash_ps1 "$?" ""')
+fi
+
+PS1_CONFIG_SQUISH_DIRS=("$HOME" "$HOME/Downloads/streams")
 
 __bash_ps1 ()
 {
-    [[ "${PS1_CONFIG_LINES:-2}" -eq 1 ]] \
-        && declare -- PS1_SYMBOL=$'\uE285' PS1_EXPANDED= PS1_SEPARATOR=" " \
-        || declare -- PS1_SYMBOL=$'\uE285' PS1_EXPANDED= PS1_SEPARATOR=$'\n'
+    local PS1_SYMBOL=$'\uE285' PS1_STRING="\w" PS1_EXPANDED= \
+        PS1_TRUE="\[\e[92m\]"  PS1_RESET="\[\e[0m\]" \
+        PS1_FALSE="\[\e[91m\]" PS1_PROMPT="\[\e[95m\]" \
+        PS1_EXIT="\[\e[93m\]"  PS1_GIT="\[\e[93m\]"
 
-    [[ "$1" -eq 0 ]] \
-        && declare -- PS1_PWD="\[\e[32m\]\w\[\e[0m\]" PS1_CODE="" \
-        || declare -- PS1_PWD="\[\e[31m\]\w\[\e[0m\]" PS1_CODE="\[\e[33m\]$1\[\e[0m\] "
+    PS1="${PS1_RESET}${PS1_PROMPT}${PS1_SYMBOL}${PS1_RESET} "
+    PS2="${PS1_RESET}${PS1_PROMPT}${PS1_SYMBOL}${PS1_RESET} "
 
-    if [[ -n "$2" ]]; then
-        [[ ${#2} -le 20 ]] \
-            && declare -- PS1_BRANCH=" \[\e[33m\]$2\[\e[0m\]" \
-            || declare -- PS1_BRANCH=" \[\e[33m\]${2:0:17}...\[\e[0m\]"
+    [[ "${PS1_CONFIG_QUIET:-2}" == "1" ]] && return 0
+
+    local PS1_SEPARATOR=$'\n'
+    if [[ "${PS1_CONFIG_SQUISH:-2}" == "1" ]]; then
+        PS1_SEPARATOR=" "
+    elif [[ -n "$PS1_CONFIG_SQUISH_DIRS" ]]; then
+        local PS1_CONFIG_SQUISH_DIRS_INDEX=
+        for PS1_CONFIG_SQUISH_DIRS_INDEX in "${PS1_CONFIG_SQUISH_DIRS[@]}"; do
+            [[ "$PWD" == "$PS1_CONFIG_SQUISH_DIRS_INDEX" ]] && PS1_SEPARATOR=" "
+        done
     fi
 
-    unset PROMPT_DIRTRIM; PS1="\w"
-    until PS1_EXPANDED="${PS1@P}" && [[ ${#PS1_EXPANDED} -le 60 ]]; do
+    if [[ "$1" -eq 0 ]]
+    then local PS1_PWD="${PS1_TRUE}\w${PS1_RESET}" PS1_CODE=""
+    else local PS1_PWD="${PS1_FALSE}\w${PS1_RESET}" PS1_CODE="${PS1_EXIT}${1}${PS1_RESET} "
+    fi
+
+    if [[ -n "$2" ]]; then
+        if [[ ${#2} -le 20 ]]
+        then local PS1_BRANCH=" ${PS1_GIT}$2${PS1_RESET}"
+        else local PS1_BRANCH=" ${PS1_GIT}${2:0:17}...${PS1_RESET}"
+        fi
+    fi
+
+    unset PROMPT_DIRTRIM
+    until PS1_EXPANDED="${PS1_STRING@P}" && [[ ${#PS1_EXPANDED} -le 60 ]]; do
         [[ ${PROMPT_DIRTRIM:=7} -eq 1 ]] && break 1
         PROMPT_DIRTRIM=$((PROMPT_DIRTRIM - 1))
     done
 
-    PS2="\[\e[35m\]$PS1_SYMBOL\[\e[0m\] "
-    PS1="\[\e[0m\]${PS1_CODE}${PS1_PWD}${PS1_BRANCH}${PS1_SEPARATOR}${PS2}"
+    PS1="${PS1_RESET}${PS1_CODE}${PS1_PWD}${PS1_BRANCH}${PS1_SEPARATOR}${PS1}"
 }
