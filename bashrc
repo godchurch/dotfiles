@@ -8,7 +8,7 @@ unset HISTFILE
 
 IFS=$' \t\n'
 
-[[ "$TERM" == @(xterm*|rxvt*|tmux*) ]] && printf "\e]2;PID: %d\a" "$$"
+case "$TERM" in xterm*|rxvt*|tmux*) printf "\e]0;PID: %d\a" "$$" ;; esac
 
 if command -v nvim > /dev/null; then
     export EDITOR="nvim" MANPAGER="nvim +Man!"
