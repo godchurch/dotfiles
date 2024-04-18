@@ -10,14 +10,6 @@ IFS=$' \t\n'
 
 case "$TERM" in xterm*|rxvt*|tmux*) printf "\e]0;PID: %d\a" "$$" ;; esac
 
-if command -v nvim > /dev/null; then
-    export EDITOR="nvim" MANPAGER="nvim +Man!"
-elif command -v vim > /dev/null; then
-    export EDITOR="vim" MANPAGER="vim --not-a-term -M +MANPAGER -"
-elif command -v vi > /dev/null; then
-    export EDITOR="vi"
-fi
-
 alias sudo="sudo "
 alias cp="cp -i"
 alias mv="mv -i"
