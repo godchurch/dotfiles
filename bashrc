@@ -24,50 +24,51 @@ then PROMPT_COMMAND=('__bash_ps1 "$?" "$(git symbolic-ref --short HEAD 2> /dev/n
 else PROMPT_COMMAND=('__bash_ps1 "$?" ""')
 fi
 
-PS1_CONFIG_SQUISH_DIRS=("$HOME" "$HOME/Downloads/streams")
-
 __bash_ps1 ()
 {
-    local PS1_SYMBOL=$'\uE285'   PS1_STRING="\w" \
-          PS1_HOME=$'\uF46D'     PS1_EXPANDED= \
-          PS1_TRUE="\[\e[92m\]"  PS1_RESET="\[\e[0m\]" \
-          PS1_FALSE="\[\e[91m\]" PS1_PROMPT="\[\e[95m\]" \
-          PS1_EXIT="\[\e[93m\]"  PS1_GIT="\[\e[93m\]"
-
-    PS1="${PS1_RESET}${PS1_PROMPT}${PS1_SYMBOL}${PS1_RESET} "
-    PS2="${PS1_RESET}${PS1_PROMPT}${PS1_SYMBOL}${PS1_RESET} "
-
-    [[ "${PS1_CONFIG_QUIET:-2}" == "1" ]] && return 0
-
-    local PS1_SEPARATOR=$'\n'
-    if [[ "$PWD" == "$HOME" ]]; then
-        PS1_SEPARATOR=" " PS1_STRING="$PS1_HOME"
-    elif [[ "${PS1_CONFIG_SQUISH:-2}" == "1" ]]; then
-        PS1_SEPARATOR=" "
-    elif [[ -n "$PS1_CONFIG_SQUISH_DIRS" ]]; then
-        local PS1_CONFIG_SQUISH_DIRS_INDEX=
-        for PS1_CONFIG_SQUISH_DIRS_INDEX in "${PS1_CONFIG_SQUISH_DIRS[@]}"; do
-            [[ "$PWD" == "$PS1_CONFIG_SQUISH_DIRS_INDEX" ]] && PS1_SEPARATOR=" "
-        done
+    if [[ "${PS1_CONFIG_UNICODE-UNSET}" == "UNSET" ]]; then
+        ls /usr/local/share/fonts/*.ttf &> /dev/null && PS1_CONFIG_UNICODE=1
     fi
 
-    unset PROMPT_DIRTRIM
-    until PS1_EXPANDED="${PS1_STRING@P}" && [[ ${#PS1_EXPANDED} -le 60 ]]; do
-        [[ ${PROMPT_DIRTRIM:=7} -eq 1 ]] && break 1
-        PROMPT_DIRTRIM=$((PROMPT_DIRTRIM - 1))
-    done
-
-    if [[ "$1" -eq 0 ]]
-    then local PS1_PWD="${PS1_TRUE}${PS1_STRING}${PS1_RESET}" PS1_CODE=""
-    else local PS1_PWD="${PS1_FALSE}${PS1_STRING}${PS1_RESET}" PS1_CODE="${PS1_EXIT}${1}${PS1_RESET} "
+    if [[ "$PS1_CONFIG_UNICODE" == "1" ]]
+    then local PS1_PROMPT=$'\uf292 ' PS1_HOME=$'\uf46d' PS1_DRIVE=$'\uf48d' PS1_SPACER=" "
+    else local PS1_PROMPT="# "       PS1_HOME="(H)"     PS1_DRIVE="(D)"     PS1_SPACER=
     fi
 
-    if [[ -n "$2" ]]; then
-        if [[ ${#2} -le 20 ]]
-        then local PS1_BRANCH=" ${PS1_GIT}$2${PS1_RESET}"
-        else local PS1_BRANCH=" ${PS1_GIT}${2:0:17}...${PS1_RESET}"
-        fi
+    local PS1_COLOR_RESET="\[\033[0m\]"     PS1_COLOR_PROMPT="\[\033[95m\]" \
+          PS1_COLOR_TRUE="\[\033[92m\]"     PS1_COLOR_FALSE="\[\033[91m\]" \
+          PS1_COLOR_EXITCODE="\[\033[93m\]" PS1_COLOR_GITBRANCH="\[\033[93m\]"
+
+    if [[ "${PS1_CONFIG_QUIET:-2}" == "1" ]]; then
+        PS1="${PS1_COLOR_PROMPT}${PS1_PROMPT% }${PS1_COLOR_RESET} "
+        PS2="$PS1"
+        return 0
     fi
 
-    PS1="${PS1_RESET}${PS1_CODE}${PS1_PWD}${PS1_BRANCH}${PS1_SEPARATOR}${PS1}"
+    if [[ "$1" -ge 1 ]]
+    then local PS1_COLOR_DIRECTORY="$PS1_COLOR_FALSE" PS1_EXITCODE="$1 "
+    else local PS1_COLOR_DIRECTORY="$PS1_COLOR_TRUE" PS1_EXITCODE=
+    fi
+
+    [[ -n "$2" ]] && local PS1_GITBRANCH=" $2" || local PS1_GITBRANCH=
+
+    local PS1_DIRECTORY="$PWD"
+    case "$PS1_DIRECTORY" in
+        "$HOME") PS1_DIRECTORY="$PS1_HOME" ;;
+        "$HOME/"*) PS1_DIRECTORY="${PS1_HOME}${PS1_SPACER}${PS1_DIRECTORY#$HOME/}" ;;
+        "/media/$USER") PS1_DIRECTORY="$PS1_DRIVE" ;;
+        "/media/$USER/"*) PS1_DIRECTORY="${PS1_DRIVE}${PS1_SPACER}${PS1_DIRECTORY#/media/$USER/}" ;;
+    esac
+
+    local PS1_SEPARATOR=" "
+    local PS1_WIDTH="$((${#PS1_EXITCODE} + ${#PS1_DIRECTORY} + ${#PS1_GITBRANCH} + ${#PS1_SEPARATOR} + ${#PS1_PROMPT}))"
+    [[ "$PS1_WIDTH" -gt "$((${COLUMNS:-80} / 2 ))" ]] && PS1_SEPARATOR=$'\n'
+
+    local PS1_COLORED_EXITCODE="${PS1_EXITCODE:+${PS1_COLOR_EXITCODE}${PS1_EXITCODE% }${PS1_COLOR_RESET} }"
+    local PS1_COLORED_DIRECTORY="${PS1_COLOR_DIRECTORY}${PS1_DIRECTORY}${PS1_COLOR_RESET}"
+    local PS1_COLORED_GITBRANCH="${PS1_GITBRANCH:+ ${PS1_COLOR_GITBRANCH}${PS1_GITBRANCH# }${PS1_COLOR_RESET}}"
+    local PS1_COLORED_PROMPT="${PS1_COLOR_PROMPT}${PS1_PROMPT% }${PS1_COLOR_RESET} "
+
+    PS1="${PS1_COLORED_EXITCODE}${PS1_COLORED_DIRECTORY}${PS1_COLORED_GITBRANCH}${PS1_SEPARATOR}${PS1_COLORED_PROMPT}"
+    PS2="${PS1_COLORED_PROMPT}"
 }
