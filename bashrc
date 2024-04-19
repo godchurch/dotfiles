@@ -26,11 +26,7 @@ fi
 
 __bash_ps1 ()
 {
-    if [[ "${PS1_CONFIG_UNICODE-UNSET}" == "UNSET" ]]; then
-        ls /usr/local/share/fonts/*.ttf &> /dev/null && PS1_CONFIG_UNICODE=1
-    fi
-
-    if [[ "$PS1_CONFIG_UNICODE" == "1" ]]
+    if ls /usr/local/share/fonts/*.ttf &> /dev/null
     then local PS1_PROMPT=$'\uf292 ' PS1_HOME=$'\uf46d' PS1_DRIVE=$'\uf48d' PS1_SPACER=" "
     else local PS1_PROMPT="# "       PS1_HOME="(H)"     PS1_DRIVE="(D)"     PS1_SPACER=
     fi
