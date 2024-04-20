@@ -8,7 +8,9 @@ unset HISTFILE
 
 IFS=$' \t\n'
 
-case "$TERM" in xterm*|rxvt*|tmux*) printf "\e]0;PID: %d\a" "$$" ;; esac
+case "$TERM" in
+    xterm*|rxvt*|tmux*) printf "\e]0;PID: %d\a" "$$" ;;
+esac
 
 alias sudo="sudo "
 alias cp="cp -i"
@@ -48,12 +50,12 @@ __bash_ps1 ()
 
     [[ -n "$2" ]] && local PS1_GITBRANCH=" $2" || local PS1_GITBRANCH=
 
-    local PS1_DIRECTORY="$PWD"
+    local PS1_DIRECTORY="$PWD" PS1_MOUNT="/media/$USER"
     case "$PS1_DIRECTORY" in
         "$HOME") PS1_DIRECTORY="$PS1_HOME" ;;
         "$HOME/"*) PS1_DIRECTORY="${PS1_HOME}${PS1_SPACER}${PS1_DIRECTORY#$HOME/}" ;;
-        "/media/$USER") PS1_DIRECTORY="$PS1_DRIVE" ;;
-        "/media/$USER/"*) PS1_DIRECTORY="${PS1_DRIVE}${PS1_SPACER}${PS1_DIRECTORY#/media/$USER/}" ;;
+        "$PS1_MOUNT") PS1_DIRECTORY="$PS1_DRIVE" ;;
+        "$PS1_MOUNT/"*) PS1_DIRECTORY="${PS1_DRIVE}${PS1_SPACER}${PS1_DIRECTORY#$PS1_MOUNT/}" ;;
     esac
 
     local PS1_SEPARATOR=" "
