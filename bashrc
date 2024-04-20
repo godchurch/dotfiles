@@ -22,7 +22,7 @@ alias la="ls -lA --color=auto --human-readable"
 alias grp="grep --color=auto"
 
 if command -v git > /dev/null
-then PROMPT_COMMAND=('__bash_ps1 "$?" "$(git symbolic-ref --short HEAD 2> /dev/null)"')
+then PROMPT_COMMAND=('__bash_ps1 "$?" "$(git branch --show-current 2> /dev/null)"')
 else PROMPT_COMMAND=('__bash_ps1 "$?" ""')
 fi
 
