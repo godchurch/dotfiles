@@ -16,10 +16,8 @@ alias sudo="sudo "
 alias cp="cp -i"
 alias mv="mv -i"
 alias rm="rm -i"
-
-alias ll="ls -l --color=auto --human-readable"
-alias la="ls -lA --color=auto --human-readable"
-alias grp="grep --color=auto"
+alias ls="ls --color=auto"
+alias grep="grep --color=auto"
 
 if command -v git > /dev/null
 then PROMPT_COMMAND=('__bash_ps1 "$?" "$(git branch --show-current 2> /dev/null)"')
