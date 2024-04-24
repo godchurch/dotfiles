@@ -54,6 +54,7 @@ __generate_prompt ()
         if [[ "$PS1_DIRECTORY/" == "$3/"* ]]; then
             PS1_DIRECTORY="${PS1_DIRECTORY#"$3"}"
             PS1_DIRECTORY="$1${PS1_DIRECTORY:+ ...$PS1_DIRECTORY}"
+            #PS1_DIRECTORY="$2${PS1_DIRECTORY:+ ...$PS1_DIRECTORY}"
             break 1
         fi
         shift 3
@@ -72,9 +73,9 @@ __generate_prompt ()
         PS1_PROMPT="$PS1_PROMPT \[\033[93m\]$PS1_GITBRANCH\[\033[0m\]"
     fi
 
-    PS1_STRING="# "
-    PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_STRING} ))"
-    PS1="\[\033[95m\]#\[\033[0m\] "
+    PS1_WIDTH="$(( PS1_WIDTH + 2 ))"
+    PS1=$'\\[\\033[95m\\]\uF101\\[\\033[0m\\] '
+    #PS1="\[\033[95m\]#\[\033[0m\] "
 
     if [[ $(( PS1_WIDTH + 1 )) -lt $((${COLUMNS:-80} / 2)) ]]
     then printf -v PS1 "%s %s" "$PS1_PROMPT" "$PS1"
