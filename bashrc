@@ -20,51 +20,64 @@ alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 
 if command -v git > /dev/null
-then PROMPT_COMMAND=('__bash_ps1 "$?" "$(git branch --show-current 2> /dev/null)"')
-else PROMPT_COMMAND=('__bash_ps1 "$?" ""')
+then PROMPT_COMMAND=('__generate_prompt "$?" "$(git branch --show-current 2> /dev/null)"')
+else PROMPT_COMMAND=('__generate_prompt "$?" ""')
 fi
 
-__bash_ps1 ()
+__generate_prompt ()
 {
-    if ls /usr/local/share/fonts/*.ttf &> /dev/null
-    then local PS1_PROMPT=$'\uf292 ' PS1_HOME=$'\uf46d' PS1_DRIVE=$'\uf472' PS1_SPACER=" "
-    else local PS1_PROMPT="# "       PS1_HOME="(H)"     PS1_DRIVE="(D)"     PS1_SPACER=
+    declare -- PS1_EXITCODE="$1" PS1_GITBRANCH="$2" PS1_DIRECTORY="$PWD"
+    declare -- PS1_STRING=       PS1_PROMPT=        PS1_WIDTH=0
+
+    if [[ "$PS1_EXITCODE" -ne 0 ]]; then
+        PS1_STRING="$PS1_EXITCODE "
+        PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_STRING} ))"
+        PS1_PROMPT="\[\033[93m\]$PS1_EXITCODE\[\033[0m\] "
     fi
 
-    local PS1_COLOR_RESET="\[\033[0m\]"     PS1_COLOR_PROMPT="\[\033[95m\]" \
-          PS1_COLOR_TRUE="\[\033[92m\]"     PS1_COLOR_FALSE="\[\033[91m\]" \
-          PS1_COLOR_EXITCODE="\[\033[93m\]" PS1_COLOR_GITBRANCH="\[\033[93m\]"
+    set -- \
+        $'\uF0A0 [Git]'         "[D|GIT]"         "/media/$USER/sandisk-pro/main/documents/git" \
+        $'\uF0A0 [Main]'        "[D|MAIN]"        "/media/$USER/sandisk-pro/main" \
+        $'\uF0A0 [Movies]'      "[D|MOVIES]"      "/media/$USER/sandisk-pro/movies" \
+        $'\uF0A0 [Shows]'       "[D|SHOWS]"       "/media/$USER/sandisk-pro/shows" \
+        $'\uF0A0 [Watch Later]' "[D|WATCH_LATER]" "/media/$USER/sandisk-pro/watch-later" \
+        $'\uF0A0'               "[DRIVE]"         "/media/$USER/sandisk-pro" \
+        $'\uF46D [Documents]'   "[H|DOCUMENTS]"   "$HOME/Documents" \
+        $'\uF46D [Streams]'     "[H|STREAMS]"     "$HOME/Downloads/streams" \
+        $'\uF46D [Downloads]'   "[H|DOWNLOADS]"   "$HOME/Downloads" \
+        $'\uF46D [Music]'       "[H|MUSIC]"       "$HOME/Music" \
+        $'\uF46D [Pictures]'    "[H|PICTURES]"    "$HOME/Pictures" \
+        $'\uF46D [Videos]'      "[H|VIDEOS]"      "$HOME/Videos" \
+        $'\uF46D'               "[HOME]"          "$HOME"
 
-    if [[ "${PS1_CONFIG_QUIET:-2}" == "1" ]]; then
-        PS1="${PS1_COLOR_PROMPT}${PS1_PROMPT% }${PS1_COLOR_RESET} "
-        PS2="$PS1"
-        return 0
+    until [[ $# -eq 0 ]]; do
+        if [[ "$PS1_DIRECTORY/" == "$3/"* ]]; then
+            PS1_DIRECTORY="${PS1_DIRECTORY#"$3"}"
+            PS1_DIRECTORY="$1${PS1_DIRECTORY:+ ...$PS1_DIRECTORY}"
+            break 1
+        fi
+        shift 3
+    done
+
+    PS1_STRING="$PS1_DIRECTORY"
+    PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_STRING} ))"
+    if [[ "$PS1_EXITCODE" -eq 0 ]]
+    then PS1_PROMPT="$PS1_PROMPT\[\033[92m\]$PS1_DIRECTORY\[\033[0m\]"
+    else PS1_PROMPT="$PS1_PROMPT\[\033[91m\]$PS1_DIRECTORY\[\033[0m\]"
     fi
 
-    if [[ "$1" -ge 1 ]]
-    then local PS1_COLOR_DIRECTORY="$PS1_COLOR_FALSE" PS1_EXITCODE="$1 "
-    else local PS1_COLOR_DIRECTORY="$PS1_COLOR_TRUE" PS1_EXITCODE=
+    if [[ -n "$PS1_GITBRANCH" ]]; then
+        PS1_STRING=" $PS1_GITBRANCH"
+        PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_STRING} ))"
+        PS1_PROMPT="$PS1_PROMPT \[\033[93m\]$PS1_GITBRANCH\[\033[0m\]"
     fi
 
-    [[ -n "$2" ]] && local PS1_GITBRANCH=" $2" || local PS1_GITBRANCH=
+    PS1_STRING="# "
+    PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_STRING} ))"
+    PS1="\[\033[95m\]#\[\033[0m\] "
 
-    local PS1_DIRECTORY="$PWD" PS1_MOUNT="/media/$USER"
-    case "$PS1_DIRECTORY" in
-        "$HOME") PS1_DIRECTORY="$PS1_HOME" ;;
-        "$HOME/"*) PS1_DIRECTORY="${PS1_HOME}${PS1_SPACER}${PS1_DIRECTORY#$HOME/}" ;;
-        "$PS1_MOUNT") PS1_DIRECTORY="$PS1_DRIVE" ;;
-        "$PS1_MOUNT/"*) PS1_DIRECTORY="${PS1_DRIVE}${PS1_SPACER}${PS1_DIRECTORY#$PS1_MOUNT/}" ;;
-    esac
-
-    local PS1_SEPARATOR=" "
-    local PS1_WIDTH="$((${#PS1_EXITCODE} + ${#PS1_DIRECTORY} + ${#PS1_GITBRANCH} + ${#PS1_SEPARATOR} + ${#PS1_PROMPT}))"
-    [[ "$PS1_WIDTH" -gt "$((${COLUMNS:-80} / 2 ))" ]] && PS1_SEPARATOR=$'\n'
-
-    local PS1_COLORED_EXITCODE="${PS1_EXITCODE:+${PS1_COLOR_EXITCODE}${PS1_EXITCODE% }${PS1_COLOR_RESET} }"
-    local PS1_COLORED_DIRECTORY="${PS1_COLOR_DIRECTORY}${PS1_DIRECTORY}${PS1_COLOR_RESET}"
-    local PS1_COLORED_GITBRANCH="${PS1_GITBRANCH:+ ${PS1_COLOR_GITBRANCH}${PS1_GITBRANCH# }${PS1_COLOR_RESET}}"
-    local PS1_COLORED_PROMPT="${PS1_COLOR_PROMPT}${PS1_PROMPT% }${PS1_COLOR_RESET} "
-
-    PS1="${PS1_COLORED_EXITCODE}${PS1_COLORED_DIRECTORY}${PS1_COLORED_GITBRANCH}${PS1_SEPARATOR}${PS1_COLORED_PROMPT}"
-    PS2="${PS1_COLORED_PROMPT}"
+    if [[ $(( PS1_WIDTH + 1 )) -lt $((${COLUMNS:-80} / 2)) ]]
+    then printf -v PS1 "%s %s" "$PS1_PROMPT" "$PS1"
+    else printf -v PS1 "%s\n%s" "$PS1_PROMPT" "$PS1"
+    fi
 }
