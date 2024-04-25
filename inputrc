@@ -1,9 +1,12 @@
 $if Bash
 
-set colored-stats On
-set colored-completion-prefix On
+set colored-stats on
+set colored-completion-prefix on
 
-"\e[Z": menu-complete
+"\e\C-o": "virsh -c qemu:///system start live && virt-manager -c qemu:///system --show-domain-console live "
+
+"\e\C-p": menu-complete-backward
+"\e\C-n": menu-complete
 
 $endif
 
