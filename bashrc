@@ -18,6 +18,7 @@ alias mv="mv -i"
 alias rm="rm -i"
 alias ls="ls --color=auto"
 alias grep="grep --color=auto"
+alias live="virsh -c qemu:///system start live && virt-manager -c qemu:///system --show-domain-console live"
 
 if command -v git > /dev/null
 then PROMPT_COMMAND=('__generate_prompt "$?" "$(git branch --show-current 2> /dev/null)"')

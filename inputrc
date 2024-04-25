@@ -4,7 +4,6 @@ set colored-stats On
 set colored-completion-prefix On
 
 "\e[Z": menu-complete
-"\e\C-n": "virsh -c qemu:///system start live && virt-manager -c qemu:///system --show-domain-console live"
 
 $endif
 
