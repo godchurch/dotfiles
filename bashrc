@@ -27,11 +27,10 @@ fi
 __generate_prompt ()
 {
     declare -- PS1_EXITCODE="$1" PS1_GITBRANCH="$2" PS1_DIRECTORY="$PWD"
-    declare -- PS1_STRING=       PS1_PROMPT=        PS1_WIDTH=0
+    declare -- PS1_PROMPT=        PS1_WIDTH=0
 
     if [[ "$PS1_EXITCODE" -ne 0 ]]; then
-        PS1_STRING="$PS1_EXITCODE "
-        PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_STRING} ))"
+        PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_EXITCODE} + 1 ))"
         PS1_PROMPT="\[\033[93m\]$PS1_EXITCODE\[\033[0m\] "
     fi
 
@@ -60,20 +59,18 @@ __generate_prompt ()
         shift 3
     done
 
-    PS1_STRING="$PS1_DIRECTORY"
-    PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_STRING} ))"
+    PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_DIRECTORY} ))"
     if [[ "$PS1_EXITCODE" -eq 0 ]]
     then PS1_PROMPT="$PS1_PROMPT\[\033[92m\]$PS1_DIRECTORY\[\033[0m\]"
     else PS1_PROMPT="$PS1_PROMPT\[\033[91m\]$PS1_DIRECTORY\[\033[0m\]"
     fi
 
     if [[ -n "$PS1_GITBRANCH" ]]; then
-        PS1_STRING=" $PS1_GITBRANCH"
-        PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_STRING} ))"
+        PS1_WIDTH="$(( PS1_WIDTH + 1 + ${#PS1_GITBRANCH} ))"
         PS1_PROMPT="$PS1_PROMPT \[\033[93m\]$PS1_GITBRANCH\[\033[0m\]"
     fi
 
-    PS1_WIDTH="$(( PS1_WIDTH + 2 ))"
+    PS1_WIDTH="$(( PS1_WIDTH + 1 + 1 ))"
     PS1=$'\\[\\033[95m\\]\uF101\\[\\033[0m\\] '
     #PS1="\[\033[95m\]#\[\033[0m\] "
 
