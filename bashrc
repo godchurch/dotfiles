@@ -1,6 +1,5 @@
 #!/bin/bash
-
-[[ "$-" != *i* ]] && return
+case "$-" in *i*) ;; *) return 0 ;; esac
 
 \unalias -a
 umask 0022
@@ -19,63 +18,63 @@ alias rm="rm -i"
 alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 
-if command -v git > /dev/null
-then PROMPT_COMMAND=('__generate_prompt "$?" "$(git branch --show-current 2> /dev/null)"')
+if [ -x /usr/bin/git ]
+then PROMPT_COMMAND=('__generate_prompt "$?" "$(/usr/bin/git branch --show-current 2> /dev/null)"')
 else PROMPT_COMMAND=('__generate_prompt "$?" ""')
 fi
 
 __generate_prompt ()
 {
-    declare -- PS1_EXITCODE="$1" PS1_GITBRANCH="$2" PS1_DIRECTORY="$PWD"
-    declare -- PS1_PROMPT=        PS1_WIDTH=0
+    local PROMPT_STRING= PROMPT_WIDTH=0 PROMPT_DIRECTORY="$PWD"
 
-    if [[ "$PS1_EXITCODE" -ne 0 ]]; then
-        PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_EXITCODE} + 1 ))"
-        PS1_PROMPT="\[\033[93m\]$PS1_EXITCODE\[\033[0m\] "
+    if [ "$1" -ne 0 ]; then
+        PROMPT_STRING="\[\033[93m\]$1\[\033[0m\] "
+        PROMPT_WIDTH="$(($PROMPT_WIDTH + ${#1} + 1))"
     fi
 
-    set -- \
-        $'\uF0A0 [Git]'         "[D|GIT]"         "/media/$USER/sandisk-pro/main/documents/git" \
-        $'\uF0A0 [Main]'        "[D|MAIN]"        "/media/$USER/sandisk-pro/main" \
-        $'\uF0A0 [Movies]'      "[D|MOVIES]"      "/media/$USER/sandisk-pro/movies" \
-        $'\uF0A0 [Shows]'       "[D|SHOWS]"       "/media/$USER/sandisk-pro/shows" \
-        $'\uF0A0 [Watch Later]' "[D|WATCH_LATER]" "/media/$USER/sandisk-pro/watch-later" \
-        $'\uF0A0'               "[DRIVE]"         "/media/$USER/sandisk-pro" \
-        $'\uF46D [Documents]'   "[H|DOCUMENTS]"   "$HOME/Documents" \
-        $'\uF46D [Streams]'     "[H|STREAMS]"     "$HOME/Downloads/streams" \
-        $'\uF46D [Downloads]'   "[H|DOWNLOADS]"   "$HOME/Downloads" \
-        $'\uF46D [Music]'       "[H|MUSIC]"       "$HOME/Music" \
-        $'\uF46D [Pictures]'    "[H|PICTURES]"    "$HOME/Pictures" \
-        $'\uF46D [Videos]'      "[H|VIDEOS]"      "$HOME/Videos" \
-        $'\uF46D'               "[HOME]"          "$HOME"
+         local PROMPT_UNICODE PROMPT_SHORT PROMPT_FOLDER
+    while read PROMPT_UNICODE PROMPT_SHORT PROMPT_FOLDER; do
+        case "$PROMPT_DIRECTORY/" in
+            "$PROMPT_FOLDER/"*)
+                PROMPT_DIRECTORY="${PROMPT_DIRECTORY#"$PROMPT_FOLDER"}"
+                PROMPT_DIRECTORY="${PROMPT_UNICODE}${PROMPT_DIRECTORY:+ ...${PROMPT_DIRECTORY}}"
+                #PROMPT_DIRECTORY="${PROMPT_SHORT}${PROMPT_DIRECTORY:+ ...${PROMPT_DIRECTORY}}"
+                break 1
+                ;;
+        esac
+    done << EOF
+\ [Git]            [D|GIT]            /media/$USER/sandisk-pro/main/documents/git
+\ [Main]           [D|MAIN]           /media/$USER/sandisk-pro/main
+\ [Movies]         [D|MOVIES]         /media/$USER/sandisk-pro/movies
+\ [Shows]          [D|SHOWS]          /media/$USER/sandisk-pro/shows
+\ [Watch\ Later]   [D|WATCH_LATER]    /media/$USER/sandisk-pro/watch-later
+                   [DRIVE]            /media/$USER/sandisk-pro
+\ [Documents]      [H|DOCUMENTS]      $HOME/Documents
+\ [Streams]        [H|STREAMS]        $HOME/Downloads/streams
+\ [Downloads]      [H|DOWNLOADS]      $HOME/Downloads
+\ [Music]          [H|MUSIC]          $HOME/Music
+\ [Pictures]       [H|PICTURES]       $HOME/Pictures
+\ [Videos]         [H|VIDEOS]         $HOME/Videos
+                   [HOME]             $HOME
+EOF
 
-    until [[ $# -eq 0 ]]; do
-        if [[ "$PS1_DIRECTORY/" == "$3/"* ]]; then
-            PS1_DIRECTORY="${PS1_DIRECTORY#"$3"}"
-            PS1_DIRECTORY="$1${PS1_DIRECTORY:+ ...$PS1_DIRECTORY}"
-            #PS1_DIRECTORY="$2${PS1_DIRECTORY:+ ...$PS1_DIRECTORY}"
-            break 1
-        fi
-        shift 3
-    done
+    if [ "$1" -eq 0 ]
+    then PROMPT_STRING="$PROMPT_STRING\[\033[92m\]$PROMPT_DIRECTORY\[\033[0m\]"
+    else PROMPT_STRING="$PROMPT_STRING\[\033[91m\]$PROMPT_DIRECTORY\[\033[0m\]"
+    fi; PROMPT_WIDTH="$(($PROMPT_WIDTH + ${#PROMPT_DIRECTORY}))"
 
-    PS1_WIDTH="$(( PS1_WIDTH + ${#PS1_DIRECTORY} ))"
-    if [[ "$PS1_EXITCODE" -eq 0 ]]
-    then PS1_PROMPT="$PS1_PROMPT\[\033[92m\]$PS1_DIRECTORY\[\033[0m\]"
-    else PS1_PROMPT="$PS1_PROMPT\[\033[91m\]$PS1_DIRECTORY\[\033[0m\]"
+    if [ -n "$2" ]; then
+        PROMPT_STRING="$PROMPT_STRING \[\033[93m\]$2\[\033[0m\]"
+        PROMPT_WIDTH="$(($PROMPT_WIDTH + 1 + ${#2}))"
     fi
 
-    if [[ -n "$PS1_GITBRANCH" ]]; then
-        PS1_WIDTH="$(( PS1_WIDTH + 1 + ${#PS1_GITBRANCH} ))"
-        PS1_PROMPT="$PS1_PROMPT \[\033[93m\]$PS1_GITBRANCH\[\033[0m\]"
-    fi
-
-    PS1_WIDTH="$(( PS1_WIDTH + 1 + 1 ))"
-    PS1=$'\\[\\033[95m\\]\uF101\\[\\033[0m\\] '
+    PS1="\[\033[95m\]\[\033[0m\] "
     #PS1="\[\033[95m\]#\[\033[0m\] "
+    PROMPT_WIDTH="$(($PROMPT_WIDTH + 1 + 1))"
 
-    if [[ $(( PS1_WIDTH + 1 )) -lt $((${COLUMNS:-80} / 2)) ]]
-    then printf -v PS1 "%s %s" "$PS1_PROMPT" "$PS1"
-    else printf -v PS1 "%s\n%s" "$PS1_PROMPT" "$PS1"
+    if [ $(($PROMPT_WIDTH + 1 )) -lt $((${COLUMNS:-80} / 2)) ]
+    then PS1="$PROMPT_STRING $PS1"
+    else PS1="$PROMPT_STRING
+$PS1"
     fi
 }
