@@ -25,54 +25,14 @@ fi
 
 __generate_prompt ()
 {
-    local PROMPT_STRING= PROMPT_WIDTH=0 PROMPT_DIRECTORY="$PWD"
-
-    if [ "$1" -ne 0 ]; then
-        PROMPT_STRING="\[\033[93m\]$1\[\033[0m\] "
-        PROMPT_WIDTH="$(($PROMPT_WIDTH + ${#1} + 1))"
-    fi
-
-         local PROMPT_SHORT PROMPT_FOLDER
-    while read PROMPT_SHORT PROMPT_FOLDER; do
-        case "$PROMPT_DIRECTORY/" in
-            "$PROMPT_FOLDER/"*)
-                PROMPT_DIRECTORY="${PROMPT_DIRECTORY#"$PROMPT_FOLDER"}"
-                PROMPT_DIRECTORY="${PROMPT_SHORT}${PROMPT_DIRECTORY:+ ...${PROMPT_DIRECTORY}}"
-                break 1
-                ;;
-        esac
-    done << EOF
-[GIT]          /media/$USER/sandisk-pro/main/documents/git
-[MAIN]         /media/$USER/sandisk-pro/main
-[MOVIES]       /media/$USER/sandisk-pro/movies
-[SHOWS]        /media/$USER/sandisk-pro/shows
-[WATCH_LATER]  /media/$USER/sandisk-pro/watch-later
-[DRIVE]        /media/$USER/sandisk-pro
-[DOCUMENTS]    $HOME/Documents
-[STREAMS]      $HOME/Downloads/streams
-[DOWNLOADS]    $HOME/Downloads
-[MUSIC]        $HOME/Music
-[PICTURES]     $HOME/Pictures
-[VIDEOS]       $HOME/Videos
-[HOME]         $HOME
-EOF
-
-    if [ "$1" -eq 0 ]
-    then PROMPT_STRING="$PROMPT_STRING\[\033[92m\]$PROMPT_DIRECTORY\[\033[0m\]"
-    else PROMPT_STRING="$PROMPT_STRING\[\033[91m\]$PROMPT_DIRECTORY\[\033[0m\]"
-    fi; PROMPT_WIDTH="$(($PROMPT_WIDTH + ${#PROMPT_DIRECTORY}))"
+    case "$1" in
+        0) PS1="\n\[\033[1;35m\]❯\[\033[0m\] " ;;
+        *) PS1="\n\[\033[1;31m\]❯\[\033[0m\] " ;;
+    esac
 
     if [ -n "$2" ]; then
-        PROMPT_STRING="$PROMPT_STRING \[\033[93m\]$2\[\033[0m\]"
-        PROMPT_WIDTH="$(($PROMPT_WIDTH + 1 + ${#2}))"
+        PS1=" \[\033[2;33m\]$2\[\033[0m\]$PS1"
     fi
 
-    PS1="\[\033[95m\]\$\[\033[0m\] "
-    PROMPT_WIDTH="$(($PROMPT_WIDTH + 1 + 1))"
-
-    if [ $(($PROMPT_WIDTH + 1 )) -lt $((${COLUMNS:-80} / 2)) ]
-    then PS1="$PROMPT_STRING $PS1"
-    else PS1="$PROMPT_STRING
-$PS1"
-    fi
+    PS1="\[\033[1;34m\]\w\[\033[0m\]$PS1"
 }
