@@ -32,30 +32,29 @@ __generate_prompt ()
         PROMPT_WIDTH="$(($PROMPT_WIDTH + ${#1} + 1))"
     fi
 
-         local PROMPT_UNICODE PROMPT_SHORT PROMPT_FOLDER
-    while read PROMPT_UNICODE PROMPT_SHORT PROMPT_FOLDER; do
+         local PROMPT_SHORT PROMPT_FOLDER
+    while read PROMPT_SHORT PROMPT_FOLDER; do
         case "$PROMPT_DIRECTORY/" in
             "$PROMPT_FOLDER/"*)
                 PROMPT_DIRECTORY="${PROMPT_DIRECTORY#"$PROMPT_FOLDER"}"
-                PROMPT_DIRECTORY="${PROMPT_UNICODE}${PROMPT_DIRECTORY:+ ...${PROMPT_DIRECTORY}}"
-                #PROMPT_DIRECTORY="${PROMPT_SHORT}${PROMPT_DIRECTORY:+ ...${PROMPT_DIRECTORY}}"
+                PROMPT_DIRECTORY="${PROMPT_SHORT}${PROMPT_DIRECTORY:+ ...${PROMPT_DIRECTORY}}"
                 break 1
                 ;;
         esac
     done << EOF
-\ [Git]            [D|GIT]            /media/$USER/sandisk-pro/main/documents/git
-\ [Main]           [D|MAIN]           /media/$USER/sandisk-pro/main
-\ [Movies]         [D|MOVIES]         /media/$USER/sandisk-pro/movies
-\ [Shows]          [D|SHOWS]          /media/$USER/sandisk-pro/shows
-\ [Watch\ Later]   [D|WATCH_LATER]    /media/$USER/sandisk-pro/watch-later
-                   [DRIVE]            /media/$USER/sandisk-pro
-\ [Documents]      [H|DOCUMENTS]      $HOME/Documents
-\ [Streams]        [H|STREAMS]        $HOME/Downloads/streams
-\ [Downloads]      [H|DOWNLOADS]      $HOME/Downloads
-\ [Music]          [H|MUSIC]          $HOME/Music
-\ [Pictures]       [H|PICTURES]       $HOME/Pictures
-\ [Videos]         [H|VIDEOS]         $HOME/Videos
-                   [HOME]             $HOME
+[GIT]          /media/$USER/sandisk-pro/main/documents/git
+[MAIN]         /media/$USER/sandisk-pro/main
+[MOVIES]       /media/$USER/sandisk-pro/movies
+[SHOWS]        /media/$USER/sandisk-pro/shows
+[WATCH_LATER]  /media/$USER/sandisk-pro/watch-later
+[DRIVE]        /media/$USER/sandisk-pro
+[DOCUMENTS]    $HOME/Documents
+[STREAMS]      $HOME/Downloads/streams
+[DOWNLOADS]    $HOME/Downloads
+[MUSIC]        $HOME/Music
+[PICTURES]     $HOME/Pictures
+[VIDEOS]       $HOME/Videos
+[HOME]         $HOME
 EOF
 
     if [ "$1" -eq 0 ]
@@ -68,8 +67,7 @@ EOF
         PROMPT_WIDTH="$(($PROMPT_WIDTH + 1 + ${#2}))"
     fi
 
-    PS1="\[\033[95m\]\[\033[0m\] "
-    #PS1="\[\033[95m\]#\[\033[0m\] "
+    PS1="\[\033[95m\]\$\[\033[0m\] "
     PROMPT_WIDTH="$(($PROMPT_WIDTH + 1 + 1))"
 
     if [ $(($PROMPT_WIDTH + 1 )) -lt $((${COLUMNS:-80} / 2)) ]
