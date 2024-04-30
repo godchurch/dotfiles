@@ -1,5 +1,6 @@
 #!/bin/bash
-case "$-" in *i*) ;; *) return 0 ;; esac
+
+[ -z "$PS1" ] && return
 
 \unalias -a
 umask 0022
