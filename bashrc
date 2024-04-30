@@ -9,7 +9,7 @@ unset HISTFILE
 IFS=$' \t\n'
 
 case "$TERM" in
-    xterm*|rxvt*|tmux*) printf "\e]0;PID: %d\a" "$$" ;;
+    xterm*|rxvt*|tmux*) printf "\033]0;PID: %d\007" "$$" ;;
 esac
 
 alias sudo="sudo "
