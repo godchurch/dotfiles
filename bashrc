@@ -20,11 +20,11 @@ alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 
 if [ -x /usr/bin/git ]
-then PROMPT_COMMAND='__generate_prompt "$?" "$(/usr/bin/git branch --show-current 2> /dev/null)"'
-else PROMPT_COMMAND='__generate_prompt "$?" ""'
+then PROMPT_COMMAND='prompt_command_handle "$?" "$(/usr/bin/git branch --show-current 2> /dev/null)"'
+else PROMPT_COMMAND='prompt_command_handle "$?" ""'
 fi
 
-__generate_prompt ()
+prompt_command_handle ()
 {
     case "${#2}" in
         0) PS1="\[\033[1;34m\]\w\[\033[0m\]" ;;
