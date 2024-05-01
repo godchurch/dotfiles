@@ -20,20 +20,21 @@ alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 
 if [ -x /usr/bin/git ]
-then PROMPT_COMMAND=('__generate_prompt "$?" "$(/usr/bin/git branch --show-current 2> /dev/null)"')
-else PROMPT_COMMAND=('__generate_prompt "$?" ""')
+then PROMPT_COMMAND='__generate_prompt "$?" "$(/usr/bin/git branch --show-current 2> /dev/null)"'
+else PROMPT_COMMAND='__generate_prompt "$?" ""'
 fi
 
 __generate_prompt ()
 {
-    case "$1" in
-        0) PS1="\n\[\033[1;35m\]❯\[\033[0m\] " ;;
-        *) PS1="\n\[\033[1;31m\]❯\[\033[0m\] " ;;
+    case "${#2}" in
+        0) PS1="\[\033[1;34m\]\w\[\033[0m\]" ;;
+        *) PS1="\[\033[1;34m\]\w\[\033[0m\] \[\033[2;33m\] $2\[\033[0m\]" ;;
     esac
 
-    if [ -n "$2" ]; then
-        PS1=" \[\033[2;33m\] $2\[\033[0m\]$PS1"
-    fi
+    case "$1" in
+        0) PS1="$PS1\n\[\033[1;35m\]❯\[\033[0m\] " ;;
+        *) PS1="$PS1\n\[\033[1;31m\]❯\[\033[0m\] " ;;
+    esac
 
-    PS1="\[\033[1;34m\]\w\[\033[0m\]$PS1"
+    return "$1"
 }
