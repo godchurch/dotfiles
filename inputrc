@@ -3,7 +3,8 @@ $if Bash
 set colored-stats on
 set colored-completion-prefix on
 
-"\e\C-o": "virsh -c qemu:///system start live && virt-manager -c qemu:///system --show-domain-console live "
+#"\e\C-o": "virsh -c qemu:///system start live && virt-manager -c qemu:///system --show-domain-console live"
+"\e\C-o": "virt-manager -c qemu:///system --show-domain-console live"
 
 "\e\C-p": menu-complete-backward
 "\e\C-n": menu-complete
