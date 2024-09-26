@@ -23,3 +23,4 @@ elif command -v vi > /dev/null; then
 fi
 
 export LESSHISTFILE="-"
+export INPUTRC="$HOME/.config/inputrc"
