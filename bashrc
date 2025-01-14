@@ -8,6 +8,14 @@ unset HISTFILE
 
 IFS=$' \t\n'
 
+bind 'set colored-stats on'
+bind 'set colored-completion-prefix on'
+
+bind '"\e\C-n": menu-complete'
+bind '"\e\C-p": menu-complete-backward'
+
+bind '"\e\C-o": "virt-manager -c qemu:///system --show-domain-console live"'
+
 case "$TERM" in
     xterm*|rxvt*|tmux*) printf "\033]0;PID: %d\007" "$$" ;;
 esac
