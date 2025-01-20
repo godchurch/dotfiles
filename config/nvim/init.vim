@@ -13,6 +13,8 @@ set tabstop=4
 set softtabstop=4
 set expandtab
 
+set mouse=
+
 set dictionary=/usr/share/dict/words
 
 if &t_Co >= 256
