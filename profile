@@ -6,14 +6,6 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
-if [ -d "$HOME/.local/bin" ]; then
-    if [ -n "${PATH%%$HOME/.local/bin*}" ]; then
-        if [ -n "${PATH%%*:$HOME/.local/bin*}" ]; then
-            PATH="$HOME/.local/bin:$PATH"
-        fi
-    fi
-fi
-
 if command -v nvim > /dev/null; then
     export EDITOR="nvim" MANPAGER="nvim +Man!"
 elif command -v vim > /dev/null; then
@@ -23,4 +15,3 @@ elif command -v vi > /dev/null; then
 fi
 
 export LESSHISTFILE="-"
-export INPUTRC="$HOME/.config/inputrc"
