@@ -13,7 +13,6 @@ bind 'set colored-completion-prefix on'
 
 bind '"\e\C-n": menu-complete'
 bind '"\e\C-p": menu-complete-backward'
-
 bind '"\e\C-o": "virt-manager -c qemu:///system --show-domain-console live"'
 
 case "$TERM" in
