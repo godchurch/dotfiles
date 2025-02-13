@@ -1,0 +1,8 @@
+$if Bash
+set colored-stats on
+set colored-completion-prefix on
+
+"\e\C-n": menu-complete
+"\e\C-p": menu-complete-backward
+"\e\C-o": "virt-manager -c qemu:///system --show-domain-console live"
+$endif
