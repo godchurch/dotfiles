@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ -z "$PS1" ] && return
+[ -z "${PS1-}" ] && return
 
 \unalias -a
 umask 0022
@@ -8,7 +8,7 @@ unset HISTFILE
 
 IFS=$' \t\n'
 
-case "$TERM" in
+case "${TERM-}" in
     xterm*|rxvt*|tmux*) printf "\033]0;PID: %d\007" "$$" ;;
 esac
 
@@ -20,8 +20,8 @@ alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 
 if [ -x /usr/bin/git ]
-then PROMPT_COMMAND='prompt_command_handle "$?" "$(/usr/bin/git branch --show-current 2> /dev/null)"'
-else PROMPT_COMMAND='prompt_command_handle "$?" ""'
+then PROMPT_COMMAND='prompt_command_handle $? "$(/usr/bin/git branch --show-current 2> /dev/null)"'
+else PROMPT_COMMAND='prompt_command_handle $? ""'
 fi
 
 prompt_command_handle ()
