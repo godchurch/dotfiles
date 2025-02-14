@@ -2,6 +2,7 @@
 --restrict-filenames
 
 # Aliases
---alias download-music,-M "--format 'bestaudio[acodec=opus]/bestaudio' -x"
---alias download-youtube,-Y "--format 'bestvideo[ext=mp4][vcodec^=av01]+bestaudio[ext=m4a]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' --embed-chapters -N 4"
+--alias download-music,-M "-x --format 'bestaudio[acodec=opus]/bestaudio'"
+--alias download-youtube,-Y "-N 3 --embed-chapters --format 'bestvideo[ext=mp4][vcodec^=av01]+bestaudio[ext=m4a]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best'"
 --alias download-tiktok,-T "--output '%(id)s.%(ext)s'"
+--alias download-embed,-E "-N 3 --embed-metadata"
