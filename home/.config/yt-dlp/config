@@ -1,8 +1,11 @@
-# Restrict filenames to only ASCII characters, and avoid "&" and spaces in filenames
 --restrict-filenames
 
-# Aliases
---alias download-music,-M "-x --format 'bestaudio[acodec=opus]/bestaudio'"
---alias download-youtube,-Y "-N 3 --embed-chapters --format 'bestvideo[ext=mp4][vcodec^=av01]+bestaudio[ext=m4a]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best'"
---alias download-tiktok,-T "--output '%(id)s.%(ext)s'"
---alias download-embed,-E "-N 3 --embed-metadata"
+--alias remove-title "--parse-metadata ':(?P<meta_title>)'"
+--alias remove-date "--parse-metadata ':(?P<meta_date>)'"
+--alias remove-description "--parse-metadata ':(?P<meta_description>)'"
+--alias remove-synopsis "--parse-metadata ':(?P<meta_synopsis>)'"
+--alias remove-comment "--parse-metadata ':(?P<meta_comment>)'"
+
+--alias download-music,-M "--config-location ~/.config/yt-dlp/music.conf"
+--alias download-youtube,-Y "--config-location ~/.config/yt-dlp/youtube.conf"
+--alias download-tiktok,-T "--config-location ~/.config/yt-dlp/tiktok.conf"
