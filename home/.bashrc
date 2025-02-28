@@ -8,10 +8,6 @@ unset HISTFILE
 
 IFS=$' \t\n'
 
-case "${TERM-}" in
-    xterm*|rxvt*|tmux*) printf "\033]0;PID: %d\007" "$$" ;;
-esac
-
 alias sudo="sudo "
 alias cp="cp -i"
 alias mv="mv -i"
@@ -19,9 +15,9 @@ alias rm="rm -i"
 alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 
-if [ -x /usr/bin/git ]
-then PROMPT_COMMAND='prompt_command_handle $? "$(/usr/bin/git branch --show-current 2> /dev/null)"'
-else PROMPT_COMMAND='prompt_command_handle $?'
+if command -p -v git > /dev/null
+then PROMPT_COMMAND=('prompt_command_handle $? "$(command -p git branch --show-current 2> /dev/null)"')
+else PROMPT_COMMAND=('prompt_command_handle $?')
 fi
 
 prompt_command_handle ()
@@ -30,6 +26,4 @@ prompt_command_handle ()
     then PS1="\[\033[0m\033[34m\]\w${2:+ \[\033[32m\]$2}\n\[\033[35m\]❯\[\033[0m\] "
     else PS1="\[\033[0m\033[34m\]\w${2:+ \[\033[32m\]$2}\n\[\033[31m\]❯\[\033[0m\] "
     fi
-
-    return "$1"
 }
