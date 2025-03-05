@@ -1,7 +1,7 @@
 # System-wide .bashrc file for interactive bash(1) shells.
 
 # If not running interactively, don't do anything
-[ -z "${PS1-}" ] && return
+[ -n "${PS1+x}" ] || return 0
 
 # enable bash completion in interactive shells
 if ! shopt -oq posix; then

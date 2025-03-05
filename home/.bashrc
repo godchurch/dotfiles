@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ -n "${PS1-}" ] || return 0
+[ -n "${PS1+x}" ] || return 0
 
 \unalias -a
 umask 0022
