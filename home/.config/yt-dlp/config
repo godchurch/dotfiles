@@ -7,5 +7,5 @@
 --alias remove-comment "--parse-metadata ':(?P<meta_comment>)'"
 
 --alias download-music,-M "--config-location ~/.config/yt-dlp/music.conf"
---alias download-youtube,-Y "--config-location ~/.config/yt-dlp/youtube.conf"
 --alias download-tiktok,-T "--config-location ~/.config/yt-dlp/tiktok.conf"
+--alias download-youtube,-Y "--config-location ~/.config/yt-dlp/youtube.conf"
