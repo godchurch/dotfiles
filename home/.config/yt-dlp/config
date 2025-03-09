@@ -1,11 +1,19 @@
 --restrict-filenames
 
---alias remove-title "--parse-metadata ':(?P<meta_title>)'"
---alias remove-date "--parse-metadata ':(?P<meta_date>)'"
---alias remove-description "--parse-metadata ':(?P<meta_description>)'"
---alias remove-synopsis "--parse-metadata ':(?P<meta_synopsis>)'"
---alias remove-comment "--parse-metadata ':(?P<meta_comment>)'"
+--alias remove-title '--parse-metadata ":(?P<meta_title>)"'
+--alias remove-date '--parse-metadata ":(?P<meta_date>)"'
+--alias remove-description '--parse-metadata ":(?P<meta_description>)"'
+--alias remove-synopsis '--parse-metadata ":(?P<meta_synopsis>)"'
+--alias remove-comment '--parse-metadata ":(?P<meta_comment>)"'
 
---alias download-music,-M "--config-location ~/.config/yt-dlp/music.conf"
---alias download-tiktok,-T "--config-location ~/.config/yt-dlp/tiktok.conf"
---alias download-youtube,-Y "--config-location ~/.config/yt-dlp/youtube.conf"
+--alias defaults-youtube '--embed-chapters --embed-metadata --remove-date --remove-description --remove-synopsis --parse-metadata "%(channel)s - %(channel_url)s:%(artist)s" --parse-metadata "%(webpage_url)s:%(comment)s" -f "bestvideo[ext=mp4][vcodec^=av01]+bestaudio[ext=m4a]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best"'
+--alias defaults-tiktok '--embed-metadata --remove-title --remove-date --remove-description --remove-synopsis --parse-metadata "%(uploader_url)s:%(artist)s" --parse-metadata "%(webpage_url)s:%(comment)s"'
+
+--alias download-youtube-video,-Y '--defaults-youtube -o "%(title)s.%(ext)s"'
+--alias download-youtube-playlist,-L '--defaults-youtube -o "%(playlist_title)s/%(playlist_index)s-%(title)s.%(ext)s"'
+
+--alias download-tiktok-video,-T '--defaults-tiktok  -o "%(uploader)s/%(id)s.%(ext)s"'
+
+--alias download-sound,-X '--extract-audio --format "bestaudio[acodec=opus]/bestaudio"'
+
+--alias limit-1080p-resolution,-l '--format-sort "res:1080"'
