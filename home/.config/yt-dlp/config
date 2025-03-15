@@ -6,14 +6,10 @@
 --alias remove-synopsis '--parse-metadata ":(?P<meta_synopsis>)"'
 --alias remove-comment '--parse-metadata ":(?P<meta_comment>)"'
 
---alias defaults-youtube '--embed-chapters --embed-metadata --remove-date --remove-description --remove-synopsis --parse-metadata "%(channel)s - %(channel_url)s:%(artist)s" --parse-metadata "%(webpage_url)s:%(comment)s" -f "bestvideo[ext=mp4][vcodec^=av01]+bestaudio[ext=m4a]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best"'
---alias defaults-tiktok '--embed-metadata --remove-title --remove-date --remove-description --remove-synopsis --parse-metadata "%(uploader_url)s:%(artist)s" --parse-metadata "%(webpage_url)s:%(comment)s"'
+--alias download-stream,-d '--config-locations ~/.config/yt-dlp/stream.conf'
+--alias download-youtube,-y '--config-locations ~/.config/yt-dlp/youtube.conf --output "%(title)s.%(ext)s"'
+--alias download-playlist,-l '--config-locations ~/.config/yt-dlp/youtube.conf --output "%(playlist_title)s/%(playlist_index)s-%(title)s.%(ext)s"'
+--alias download-tiktok,-t '--config-locations ~/.config/yt-dlp/tiktok.conf'
 
---alias download-youtube-video,-Y '--defaults-youtube -o "%(title)s.%(ext)s"'
---alias download-youtube-playlist,-L '--defaults-youtube -o "%(playlist_title)s/%(playlist_index)s-%(title)s.%(ext)s"'
-
---alias download-tiktok-video,-T '--defaults-tiktok  -o "%(uploader)s/%(id)s.%(ext)s"'
-
---alias download-sound,-X '--extract-audio --format "bestaudio[acodec=opus]/bestaudio"'
-
---alias limit-1080p-resolution,-l '--format-sort "res:1080"'
+--alias -X '--extract-audio --format "bestaudio[acodec=opus]/bestaudio"'
+--alias -L '--format-sort "res:1080"'
