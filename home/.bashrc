@@ -1,10 +1,13 @@
 #!/bin/bash
 
-[ -n "${PS1+x}" ] || return 0
+case "$-" in
+    *i*) ;;
+    *) return 0 ;;
+esac
 
 \unalias -a
 umask 0022
-unset HISTFILE
+unset -v HISTFILE
 
 IFS=$' \t\n'
 

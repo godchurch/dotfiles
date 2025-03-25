@@ -1,12 +1,8 @@
 #!/bin/sh
 
-if [ -n "${PS1-}" ]; then
-    if [ -n "${BASH_VERSION-}" ]; then
-        if [ -f ~/.bashrc ]; then
-            . ~/.bashrc
-        fi
-    fi
-fi
+case "$-" in
+    *i*) [ -n "${BASH_VERSION-}" ] && [ -f ~/.bashrc ] && . ~/.bashrc ;;
+esac
 
 if command -v nvim > /dev/null; then
     export EDITOR="nvim"
