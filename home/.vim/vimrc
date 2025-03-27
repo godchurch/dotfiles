@@ -1,4 +1,6 @@
-set shadafile=NONE
+runtime! ftplugin/man.vim
+
+set viminfofile=NONE
 
 set number
 set relativenumber
@@ -18,7 +20,11 @@ set mouse=
 set dictionary=/usr/share/dict/words
 
 if &t_Co >= 256
-	colorscheme userdefault
+    set background=dark
+    "colorscheme default
+    "colorscheme habamax
+    "colorscheme custom-default
+    colorscheme custom-habamax
 endif
 
 autocmd FileType sh,bash,zsh setlocal foldmethod=syntax foldcolumn=1 colorcolumn=80
@@ -31,11 +37,11 @@ nnoremap <leader><Right> :vertical resize +2<CR>
 nnoremap <leader><Left> :vertical resize -2<CR>
 
 function StripTrailingWhitespace()
-	if !&binary && &filetype != 'diff'
-		normal mz
-		%s/\s\+$//e
-		normal `z
-	endif
+    if !&binary && &filetype != 'diff'
+        normal mz
+        %s/\s\+$//e
+        normal `z
+    endif
 endfunction
 
 autocmd BufWrite * :call StripTrailingWhitespace()

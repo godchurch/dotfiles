@@ -1,5 +1,6 @@
 " Vim color file
 
+hi clear Normal
 set background=dark
 
 hi clear
@@ -8,14 +9,13 @@ if exists("syntax_on")
   syntax reset
 endif
 
-"colorscheme default
-let g:colors_name = "userdefault"
+let colors_name = "custom-default"
 
-hi Comment       ctermfg=238     ctermbg=NONE
+hi Comment       ctermfg=238   ctermbg=NONE
 hi VertSplit     ctermfg=7     ctermbg=NONE
 hi StatusLine    ctermfg=236   ctermbg=15
 hi StatusLineNC  ctermfg=236   ctermbg=7
-hi ColorColumn   ctermfg=NONE  ctermbg=8
+hi ColorColumn   ctermfg=NONE  ctermbg=235
 
 hi Folded        ctermfg=7     ctermbg=NONE
 hi FoldColumn    ctermfg=7     ctermbg=NONE
