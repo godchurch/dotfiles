@@ -2,7 +2,7 @@
 
 case "$-" in
     *i*) ;;
-    *) return 0 ;;
+      *) return 0 ;;
 esac
 
 \unalias -a
@@ -20,5 +20,5 @@ alias grep="grep --color=auto"
 
 declare -a PROMPT_COMMAND=('BASH_GIT_BRANCH="$(/usr/bin/git branch --show-current 2> /dev/null)"')
 
-PS2="\[\033[0;00m\]\[\033[1;33m\]|\[\033[0;00m\] "
-PS1="\[\033[0;00m\]\[\033[1;34m\]\w\[\033[0;00m\]\${BASH_GIT_BRANCH:+ \[\033[1;36m\]<\$BASH_GIT_BRANCH>\[\033[0;00m\]} \[\033[1;35m\]\$?\[\033[0;00m\]\n$PS2"
+PS1='\[\033[0m\]\[\033[1;38;5;109m\]\w\[\033[0m\]${BASH_GIT_BRANCH:+ \[\033[1;38;5;108m\]<$BASH_GIT_BRANCH>\[\033[0m\]} \[\033[1;38;5;137m\]$?\[\033[0m\]\n\[\033[1;38;5;139m\]|\[\033[0m\] '
+PS2='\[\033[0m\]\[\033[1;38;5;139m\]|\[\033[0m\] '
