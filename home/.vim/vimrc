@@ -1,22 +1,21 @@
+set nocompatible
+
 runtime! ftplugin/man.vim
 
 set viminfofile=NONE
-
+set lazyredraw
+set wildmenu
 set number
 set relativenumber
-set lazyredraw
+set cursorline
 set showmatch
-set nowrap
-set scrolloff=999
+set hlsearch
+set scrolloff=8
 set sidescrolloff=8
-
-set shiftwidth=4
-set tabstop=4
+set autoindent
 set softtabstop=4
+set shiftwidth=4
 set expandtab
-
-set mouse=
-
 set dictionary=/usr/share/dict/words
 
 if &t_Co >= 256
@@ -27,9 +26,13 @@ if &t_Co >= 256
     colorscheme custom-habamax
 endif
 
-autocmd FileType sh,bash,zsh setlocal foldmethod=syntax foldcolumn=1 colorcolumn=80
-autocmd FileType sh,bash,zsh let g:sh_fold_enabled=3
-autocmd FileType make set noexpandtab
+autocmd FileType make    setlocal noexpandtab
+autocmd FileType sh,bash setlocal foldmethod=syntax
+autocmd FileType sh,bash setlocal foldcolumn=1
+autocmd FileType sh,bash setlocal colorcolumn=80
+
+let g:sh_fold_enabled=1
+"let sh_minlines=500
 
 nnoremap <leader><Up> :resize +2<CR>
 nnoremap <leader><Down> :resize -2<CR>
