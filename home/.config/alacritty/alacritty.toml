@@ -1,0 +1,40 @@
+[window]
+padding = { x = 5, y = 5 }
+dynamic_padding = true
+opacity = 0.9
+
+[font]
+size = 11.5
+
+[colors.primary]
+foreground = "#bcbcbc"
+background = "#1c1c1c"
+
+[colors.normal]
+black = "#1c1c1c"
+red = "#d75f5f"
+green = "#87af87"
+yellow = "#afaf87"
+blue = "#5f87af"
+magenta = "#af87af"
+cyan = "#5f8787"
+white = "#9e9e9e"
+
+[colors.bright]
+black = "#767676"
+red = "#d7875f"
+green = "#afd7af"
+yellow = "#d7d787"
+blue = "#87afd7"
+magenta = "#d7afd7"
+cyan = "#87afaf"
+white = "#bcbcbc"
+
+[[hints.enabled]]
+action = "Select"
+hyperlinks = true
+post_processing = false
+persist = true
+mouse.enabled = true
+binding = { key = "U", mods = "Control|Shift" }
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
