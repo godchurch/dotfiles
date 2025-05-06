@@ -6,10 +6,10 @@
 --alias remove-synopsis '--parse-metadata ":(?P<meta_synopsis>)"'
 --alias remove-comment '--parse-metadata ":(?P<meta_comment>)"'
 
---alias download-stream,-d '--config-locations "~/.config/yt-dlp/stream.conf"'
---alias download-youtube,-y '--config-locations "~/.config/yt-dlp/youtube.conf" --output "%(title)s.%(ext)s"'
---alias download-playlist,-l '--config-locations "~/.config/yt-dlp/youtube.conf" --output "%(playlist_title)s/%(playlist_index)s-%(title)s.%(ext)s"'
---alias download-tiktok,-t '--config-locations "~/.config/yt-dlp/tiktok.conf"'
+--alias download-stream,-D '--config-locations "~/.config/yt-dlp/stream.conf"'
+--alias download-youtube,-Y '--config-locations "~/.config/yt-dlp/youtube.conf" --output "%(title)s.%(ext)s"'
+--alias download-playlist,-L '--config-locations "~/.config/yt-dlp/youtube.conf" --output "%(playlist_title)s/%(playlist_index)s-%(title)s.%(ext)s"'
+--alias download-tiktok,-T '--config-locations "~/.config/yt-dlp/tiktok.conf"'
 
 --alias -X '--extract-audio --format "bestaudio[acodec=opus]/bestaudio"'
---alias -L '--format-sort "res:1080"'
+--alias -l '--format-sort "res:1080"'
