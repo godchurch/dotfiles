@@ -1,15 +1,9 @@
 --restrict-filenames
 
---alias remove-title '--parse-metadata ":(?P<meta_title>)"'
---alias remove-date '--parse-metadata ":(?P<meta_date>)"'
---alias remove-description '--parse-metadata ":(?P<meta_description>)"'
---alias remove-synopsis '--parse-metadata ":(?P<meta_synopsis>)"'
---alias remove-comment '--parse-metadata ":(?P<meta_comment>)"'
+--alias download-stream,-D "--config-locations '~/.config/yt-dlp/stream.conf'"
+--alias download-youtube,-Y "--config-locations '~/.config/yt-dlp/youtube.conf' -o '%(title)s.%(ext)s'"
+--alias download-playlist,-L "--config-locations '~/.config/yt-dlp/youtube.conf' -o '%(playlist_title)s/%(playlist_index)s-%(title)s.%(ext)s'"
+--alias download-tiktok,-T "--config-locations '~/.config/yt-dlp/tiktok.conf'"
 
---alias download-stream,-D '--config-locations "~/.config/yt-dlp/stream.conf"'
---alias download-youtube,-Y '--config-locations "~/.config/yt-dlp/youtube.conf" --output "%(title)s.%(ext)s"'
---alias download-playlist,-L '--config-locations "~/.config/yt-dlp/youtube.conf" --output "%(playlist_title)s/%(playlist_index)s-%(title)s.%(ext)s"'
---alias download-tiktok,-T '--config-locations "~/.config/yt-dlp/tiktok.conf"'
-
---alias -X '--extract-audio --format "bestaudio[acodec=opus]/bestaudio"'
---alias -l '--format-sort "res:1080"'
+--alias -X "-f 'ba[acodec^=opus]/ba/b' -x"
+--alias -l "-S 'res:1080'"
